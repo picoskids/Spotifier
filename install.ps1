@@ -206,7 +206,7 @@ if ($choice -eq 1) {
 else {
   Write-Host -Object 'Starting the spotifier Marketplace installation script..'
   $Parameters = @{
-    Uri             = 'https://raw.githubusercontent.com/spotifier/spotifier-marketplace/main/resources/install.ps1'
+    Uri             = 'https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.ps1'
     UseBasicParsing = $true
   }
   Invoke-WebRequest @Parameters | Invoke-Expression
