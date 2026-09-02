@@ -85,7 +85,7 @@ function Get-Spotifier {
     }
     else {
       Write-Host -Object 'Fetching the latest spotifier version...' -NoNewline
-      $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/ValveularGT/Spotifier/releases/latest'
+      $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/picoskids/Spotifier/releases/latest'
       $targetVersion = $latestRelease.tag_name -replace 'v', ''
       Write-Success
     }
@@ -94,7 +94,7 @@ function Get-Spotifier {
   process {
     Write-Host -Object "Downloading spotifier v$targetVersion..." -NoNewline
     $Parameters = @{
-      Uri            = "https://github.com/ValveularGT/Spotifier/releases/download/v$targetVersion/spotifier-$targetVersion-windows-$architecture.zip"
+      Uri            = "https://github.com/picoskids/Spotifier/releases/download/v$targetVersion/spotifier-$targetVersion-windows-$architecture.zip"
       UseBasicParsin = $true
       OutFile        = $archivePath
     }

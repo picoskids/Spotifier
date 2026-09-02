@@ -25,7 +25,7 @@ func Update(currentVersion string) bool {
 	}
 
 	utils.PrintInfo("Latest release: " + tagName)
-	var assetURL string = "https://github.com/ValveularGT/Spotifier/releases/download/v" + tagName + "/spotifier-" + tagName + "-" + runtime.GOOS + "-"
+	var assetURL string = "https://github.com/picoskids/Spotifier/releases/download/v" + tagName + "/spotifier-" + tagName + "-" + runtime.GOOS + "-"
 	var location string = os.TempDir() + "/spotifier-" + tagName
 
 	if runtime.GOARCH == "386" && runtime.GOOS == "windows" {

@@ -50,7 +50,7 @@ func applyPatches(input string, patches []Patch) string {
 }
 
 func readRemoteCssMap(tag string, cssTranslationMap *map[string]string) error {
-	var cssMapURL string = "https://raw.githubusercontent.com/ValveularGT/Spotifier/" + tag + "/css-map.json"
+	var cssMapURL string = "https://raw.githubusercontent.com/picoskids/Spotifier/" + tag + "/css-map.json"
 	cssMapResp, err := http.Get(cssMapURL)
 	if err != nil {
 		return err
@@ -1140,7 +1140,7 @@ func FetchLatestTagMatchingVersion(version string) (string, error) {
 	if version == "Dev" {
 		return "Dev", nil
 	}
-	res, err := http.Get("https://api.github.com/repos/ValveularGT/Spotifier/releases")
+	res, err := http.Get("https://api.github.com/repos/picoskids/Spotifier/releases")
 	if err != nil {
 		return "", err
 	}

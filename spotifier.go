@@ -541,7 +541,7 @@ upgrade|update      Update spotifier to the latest version if an update is avail
 -v, --version       Print version number and quit
 
 For config information, run "spotifier -h config".
-For more information and reporting bugs: https://github.com/ValveularGT/Spotifier/`)
+For more information and reporting bugs: https://github.com/picoskids/Spotifier/`)
 }
 
 func helpConfig() {

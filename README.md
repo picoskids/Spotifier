@@ -1,8 +1,8 @@
 <h3 align="center"><a href="https://spotifier.app/"><img src="https://i.imgur.com/iwcLITQ.png" width="600px"></a></h3>
 <p align="center">
-  <a href="https://goreportcard.com/report/github.com/ValveularGT/Spotifier"><img src="https://goreportcard.com/badge/github.com/ValveularGT/Spotifier"></a>
-  <a href="https://github.com/ValveularGT/Spotifier/releases/latest"><img src="https://img.shields.io/github/release/ValveularGT/Spotifier/all.svg?colorB=97CA00&label=latest%20version"></a>
-  <a href="https://github.com/ValveularGT/Spotifier/releases"><img src="https://img.shields.io/github/downloads/ValveularGT/Spotifier/total.svg?colorB=97CA00&label=total%20downloads"></a>
+  <a href="https://goreportcard.com/report/github.com/picoskids/Spotifier"><img src="https://goreportcard.com/badge/github.com/picoskids/Spotifier"></a>
+  <a href="https://github.com/picoskids/Spotifier/releases/latest"><img src="https://img.shields.io/github/release/picoskids/Spotifier/all.svg?colorB=97CA00&label=latest%20version"></a>
+  <a href="https://github.com/picoskids/Spotifier/releases"><img src="https://img.shields.io/github/downloads/picoskids/Spotifier/total.svg?colorB=97CA00&label=total%20downloads"></a>
   <a href="https://discord.gg/VnevqPp2Rr"><img src="https://img.shields.io/discord/842219447716151306?label=chat&logo=discord&logoColor=discord"></a>
 </p>
 
