@@ -118,10 +118,9 @@ func GetSpotifierFolder() string {
 
 func GetStateFolder(name string) string {
 	result, isAvailable := os.LookupEnv("SPOTIFIER_STATE")
-	defer func() { CheckExistAndCreate(result) }()
 
 	if isAvailable && len(result) > 0 {
-		return result
+		return GetSubFolder(result, name)
 	}
 
 	if runtime.GOOS == "windows" {
