@@ -161,4 +161,21 @@ if [ "$choice" = "N" ] || [ "$choice" = "n" ]; then
     exit 0
 fi
 echo "Starting the spotifier Marketplace installation script.."
-curl -fsSL "https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.sh" | sh
+
+# The upstream Marketplace installer shells out to the literal "spicetify"
+# command. Shim it to spotifier so Marketplace installs into spotifier's
+# config instead of a separate real spicetify install, if one is present.
+spotifier_config_dir="${SPOTIFIER_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/spotifier}"
+shim_dir=$(mktemp -d)
+cat > "$shim_dir/spicetify" << 'EOSHIM'
+#!/usr/bin/env sh
+exec spotifier "$@"
+EOSHIM
+chmod +x "$shim_dir/spicetify"
+
+(
+    export PATH="$shim_dir:$PATH"
+    export SPICETIFY_CONFIG="$spotifier_config_dir"
+    curl -fsSL "https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.sh" | sh
+)
+rm -rf "$shim_dir"

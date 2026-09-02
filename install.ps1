@@ -205,11 +205,30 @@ if ($choice -eq 1) {
 }
 else {
   Write-Host -Object 'Starting the spotifier Marketplace installation script..'
-  $Parameters = @{
-    Uri             = 'https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.ps1'
-    UseBasicParsing = $true
+
+  # The upstream Marketplace installer shells out to the literal "spicetify"
+  # command. Shim it to spotifier so Marketplace installs into spotifier's
+  # config instead of a separate real spicetify install, if one is present.
+  $shimDir = Join-Path ([System.IO.Path]::GetTempPath()) "spotifier-shim-$([guid]::NewGuid())"
+  New-Item -Path $shimDir -ItemType 'Directory' -Force | Out-Null
+  @"
+@echo off
+"$spotifierFolderPath\spotifier.exe" %*
+"@ | Set-Content -Path (Join-Path $shimDir 'spicetify.cmd') -Encoding ASCII
+
+  $originalPath = $env:PATH
+  $env:PATH = "$shimDir;$env:PATH"
+  try {
+    $Parameters = @{
+      Uri             = 'https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.ps1'
+      UseBasicParsing = $true
+    }
+    Invoke-WebRequest @Parameters | Invoke-Expression
   }
-  Invoke-WebRequest @Parameters | Invoke-Expression
+  finally {
+    $env:PATH = $originalPath
+    Remove-Item -Path $shimDir -Recurse -Force -ErrorAction 'SilentlyContinue'
+  }
 }
 #endregion Marketplace
 
