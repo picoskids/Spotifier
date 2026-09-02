@@ -195,6 +195,9 @@ func CheckStates() {
 	if backStat.IsEmpty() {
 		if spotStat.IsBackupable() {
 			utils.PrintError(`You haven't backed up. Run "spotifier backup apply"`)
+		} else if hasLegacySpicetifyInstall() {
+			utils.PrintError(`Spotify is already patched (likely by a real spicetify install) and spotifier has no backup to fall back to.`)
+			utils.PrintInfo(`Run "spotifier migrate" to restore Spotify from spicetify's own backup and carry your setup over.`)
 		} else {
 			utils.PrintError(`You haven't backed up and Spotify cannot be backed up at this state. Please re-install Spotify then run "spotifier backup apply"`)
 		}
@@ -209,6 +212,9 @@ func CheckStates() {
 		} else if spotStat.IsStock() {
 			utils.PrintInfo(`Spotify client is in stock state`)
 			utils.PrintInfo(`Please run "spotifier backup apply"`)
+		} else if hasLegacySpicetifyInstall() {
+			utils.PrintInfo(`Spotify is already patched (likely by a real spicetify install) and out of sync with spotifier's backup.`)
+			utils.PrintInfo(`Run "spotifier migrate" to restore Spotify from spicetify's own backup and carry your setup over.`)
 		} else {
 			utils.PrintInfo(`Spotify cannot be backed up at this state. Please re-install Spotify then run "spotifier backup apply"`)
 		}

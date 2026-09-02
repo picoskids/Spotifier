@@ -54,6 +54,14 @@ func getLegacyStateFolder() string {
 	}
 }
 
+// hasLegacySpicetifyInstall reports whether a real spicetify config
+// (config-xpui.ini) is present on this machine.
+func hasLegacySpicetifyInstall() bool {
+	oldConfigPath := filepath.Join(getLegacyFolder("SPICETIFY_CONFIG"), "config-xpui.ini")
+	_, err := os.Stat(oldConfigPath)
+	return err == nil
+}
+
 // Migrate finds an existing spicetify installation, restores Spotify to
 // vanilla using spicetify's own backup, then carries the user's themes,
 // extensions, custom apps, and settings over into spotifier.
