@@ -61,9 +61,11 @@ func Apply(spotifierVersion string) {
 	RefreshTheme()
 
 	if preprocSection.Key("expose_apis").MustBool(false) {
-		utils.CopyFile(
+		if err := utils.CopyFile(
 			filepath.Join(utils.GetJsHelperDir(), "spotifierWrapper.js"),
-			filepath.Join(appDestPath, "xpui", "helper"))
+			filepath.Join(appDestPath, "xpui", "helper")); err != nil {
+			utils.Fatal(fmt.Errorf("failed to copy spotifierWrapper.js (was it built? see jsHelper/): %w", err))
+		}
 	}
 
 	extensionList := featureSection.Key("extensions").Strings("|")
