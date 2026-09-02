@@ -161,4 +161,4 @@ if [ "$choice" = "N" ] || [ "$choice" = "n" ]; then
     exit 0
 fi
 echo "Starting the spotifier Marketplace installation script.."
-curl -fsSL "https://raw.githubusercontent.com/spotifier/spotifier-marketplace/main/resources/install.sh" | sh
+curl -fsSL "https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.sh" | sh
