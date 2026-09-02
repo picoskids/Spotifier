@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	spotifystatus "github.com/spicetify/cli/src/status/spotify"
-	"github.com/spicetify/cli/src/utils"
+	spotifystatus "github.com/spotifier/cli/src/status/spotify"
+	"github.com/spotifier/cli/src/utils"
 )
 
 var (
@@ -225,7 +225,7 @@ func isValidForWatching() bool {
 	status := spotifystatus.Get(appDestPath)
 
 	if !status.IsModdable() {
-		utils.PrintError(`You haven't applied. Run "spicetify apply" once before entering watch mode`)
+		utils.PrintError(`You haven't applied. Run "spotifier apply" once before entering watch mode`)
 		return false
 	}
 

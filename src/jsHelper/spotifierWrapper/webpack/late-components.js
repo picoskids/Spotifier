@@ -6,7 +6,7 @@ import { createModuleInventoryScanner } from "./module-inventory.js";
 const LATE_COMPONENTS = ["Slider", "Dropdown", "Toggle", "Cards.Artist", "Cards.Audiobook", "Cards.Profile", "Cards.Show", "Cards.Track"];
 
 function hasComponent(component) {
-  return component.split(".").reduce((owner, key) => owner?.[key], Spicetify.ReactComponent) !== undefined;
+  return component.split(".").reduce((owner, key) => owner?.[key], Spotifier.ReactComponent) !== undefined;
 }
 
 function hasLateComponents() {
@@ -21,24 +21,24 @@ export function waitForLateComponents({ require, refreshNavLinks }) {
 
     const { chunks: newChunks, modules: newModules, functionModules: newFunctionModules } = inventory.scan(require);
 
-    const remainingCardTypes = lazyCardTypes.filter((type) => Spicetify.ReactComponent.Cards[cardName(type)] === undefined);
+    const remainingCardTypes = lazyCardTypes.filter((type) => Spotifier.ReactComponent.Cards[cardName(type)] === undefined);
     if (remainingCardTypes.length) {
       Object.assign(
-        Spicetify.ReactComponent.Cards,
+        Spotifier.ReactComponent.Cards,
         Object.fromEntries(findCards({ modules: newModules, functionModules: newFunctionModules }, remainingCardTypes)),
       );
     }
 
-    if (!Spicetify.ReactComponent.Slider)
-      Spicetify.ReactComponent.Slider = wrapProvider(newFunctionModules.find((m) => fnStr(m).includes("progressBarRef")));
-    if (!Spicetify.ReactComponent.Toggle)
-      Spicetify.ReactComponent.Toggle = newFunctionModules.find((m) => fnStr(m).includes("onSelected") && fnStr(m).includes('type:"checkbox"'));
-    if (!Spicetify.ReactComponent.Dropdown)
-      Spicetify.ReactComponent.Dropdown = findDropdownComponent({ modules: newModules, chunks: newChunks, require });
-    if (!Spicetify.ReactComponent.Toggle) {
+    if (!Spotifier.ReactComponent.Slider)
+      Spotifier.ReactComponent.Slider = wrapProvider(newFunctionModules.find((m) => fnStr(m).includes("progressBarRef")));
+    if (!Spotifier.ReactComponent.Toggle)
+      Spotifier.ReactComponent.Toggle = newFunctionModules.find((m) => fnStr(m).includes("onSelected") && fnStr(m).includes('type:"checkbox"'));
+    if (!Spotifier.ReactComponent.Dropdown)
+      Spotifier.ReactComponent.Dropdown = findDropdownComponent({ modules: newModules, chunks: newChunks, require });
+    if (!Spotifier.ReactComponent.Toggle) {
       const toggleChunk = newChunks.find(([, value]) => fnStr(value).includes("onSelected") && fnStr(value).includes('type:"checkbox"'));
       if (toggleChunk) {
-        Spicetify.ReactComponent.Toggle = Object.values(require(toggleChunk[0]))[0].render;
+        Spotifier.ReactComponent.Toggle = Object.values(require(toggleChunk[0]))[0].render;
       }
     }
 
@@ -47,6 +47,6 @@ export function waitForLateComponents({ require, refreshNavLinks }) {
       return;
     }
 
-    if (Spicetify.ReactComponent.ScrollableContainer) setTimeout(() => refreshNavLinks?.(), 100);
+    if (Spotifier.ReactComponent.ScrollableContainer) setTimeout(() => refreshNavLinks?.(), 100);
   })();
 }

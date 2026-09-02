@@ -1,54 +1,54 @@
 import { waitFor } from "./shared/async.js";
 
 (function waitForPlatform() {
-  if (!Spicetify._platform) {
+  if (!Spotifier._platform) {
     setTimeout(waitForPlatform, 50);
     return;
   }
-  const { _platform } = Spicetify;
+  const { _platform } = Spotifier;
   for (const key of Object.keys(_platform)) {
     if (key.startsWith("get") && typeof _platform[key] === "function") {
-      Spicetify.Platform[key.slice(3)] = _platform[key]();
+      Spotifier.Platform[key.slice(3)] = _platform[key]();
     } else {
-      Spicetify.Platform[key] = _platform[key];
+      Spotifier.Platform[key] = _platform[key];
     }
   }
 })();
 
 (function addMissingPlatformAPIs() {
-  if (!Spicetify.Platform?.version && !Spicetify.Platform?.Registry) {
+  if (!Spotifier.Platform?.version && !Spotifier.Platform?.Registry) {
     setTimeout(addMissingPlatformAPIs, 50);
     return;
   }
-  const os = Spicetify.Platform.operatingSystem;
-  const version = Spicetify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
+  const os = Spotifier.Platform.operatingSystem;
+  const version = Spotifier.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
   if (version[0] === 1 && version[1] === 2 && version[2] < 38) return;
 
-  for (const [key, _] of Spicetify.Platform.Registry._map.entries()) {
+  for (const [key, _] of Spotifier.Platform.Registry._map.entries()) {
     if (typeof key?.description !== "string" || !key?.description.endsWith("API")) continue;
     const symbolName = key.description;
     if (symbolName === "ExclusiveModeAPI" && os === "Linux") continue;
-    if (Object.hasOwn(Spicetify.Platform, symbolName)) continue;
+    if (Object.hasOwn(Spotifier.Platform, symbolName)) continue;
     try {
-      const resolvedAPI = Spicetify.Platform.Registry.resolve(key);
-      Spicetify.Platform[symbolName] = resolvedAPI;
+      const resolvedAPI = Spotifier.Platform.Registry.resolve(key);
+      Spotifier.Platform[symbolName] = resolvedAPI;
 
-      console.debug(`[spicetifyWrapper] Resolved PlatformAPI from Registry: ${symbolName}`);
+      console.debug(`[spotifierWrapper] Resolved PlatformAPI from Registry: ${symbolName}`);
     } catch (err) {
-      console.error(`[spicetifyWrapper] Error resolving PlatformAPI from Registry: ${symbolName}`, err);
+      console.error(`[spotifierWrapper] Error resolving PlatformAPI from Registry: ${symbolName}`, err);
     }
   }
 })();
 
 // Based on https://blog.aziz.tn/2025/01/spotify-fix-lagging-issue-on-scrolling.html
 function applyScrollingFix() {
-  if (!Spicetify.Platform?.version) {
+  if (!Spotifier.Platform?.version) {
     setTimeout(applyScrollingFix, 50);
     return;
   }
 
   // Run only for 1.2.56 and lower
-  const version = Spicetify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
+  const version = Spotifier.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
   if (version[1] >= 2 && version[2] >= 57) return;
 
   const scrollableElements = Array.from(document.querySelectorAll("*:not([data-scroll-optimized])")).filter((el) => {
@@ -103,12 +103,12 @@ window.addEventListener("popstate", () => {
 applyScrollingFix();
 
 void (async function addProxyCosmos() {
-  if (!Spicetify.Player.origin?._cosmos && !Spicetify.Platform?.Registry) {
+  if (!Spotifier.Player.origin?._cosmos && !Spotifier.Platform?.Registry) {
     setTimeout(addProxyCosmos, 50);
     return;
   }
 
-  const _cosmos = Spicetify.Player.origin?._cosmos ?? Spicetify.Platform?.Registry.resolve(Symbol.for("Cosmos"));
+  const _cosmos = Spotifier.Player.origin?._cosmos ?? Spotifier.Platform?.Registry.resolve(Symbol.for("Cosmos"));
 
   const allowedMethodsMap = {
     get: "get",
@@ -125,13 +125,13 @@ void (async function addProxyCosmos() {
       const internalFetch = Reflect.get(target, prop, receiver);
 
       if (typeof internalFetch !== "function" || !allowedMethodsSet.has(prop)) return internalFetch;
-      const version = Spicetify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
+      const version = Spotifier.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
       if (version[1] >= 2 && version[2] < 31) return internalFetch;
 
       return async function (url, body) {
         const urlObj = new URL(url);
 
-        const corsProxyURLTemplate = window.localStorage.getItem("spicetify:corsProxyTemplate") ?? "https://cors-proxy.spicetify.app/{url}";
+        const corsProxyURLTemplate = window.localStorage.getItem("spotifier:corsProxyTemplate") ?? "https://cors-proxy.spotifier.app/{url}";
         const isWebAPI = urlObj.hostname === "api.spotify.com";
         const isSpClientAPI = urlObj.hostname.includes("spotify.com") && urlObj.hostname.includes("spclient");
         const isInternalURL = internalEndpoints.has(urlObj.protocol);
@@ -163,18 +163,18 @@ void (async function addProxyCosmos() {
           try {
             new URL(finalURL);
           } catch {
-            console.error("[spicetifyWrapper] Invalid CORS Proxy URL template");
+            console.error("[spotifierWrapper] Invalid CORS Proxy URL template");
           }
         }
 
-        const Authorization = `Bearer ${Spicetify.Platform.AuthorizationAPI.getState().token.accessToken}`;
+        const Authorization = `Bearer ${Spotifier.Platform.AuthorizationAPI.getState().token.accessToken}`;
         let injectedHeaders = {};
         if (isWebAPI) injectedHeaders = { Authorization };
         if (isSpClientAPI) {
           injectedHeaders = {
             Authorization,
-            "Spotify-App-Version": Spicetify.Platform.version,
-            "App-Platform": Spicetify.Platform.PlatformData.app_platform,
+            "Spotify-App-Version": Spotifier.Platform.version,
+            "App-Platform": Spotifier.Platform.PlatformData.app_platform,
           };
         }
         Object.assign(options.headers, injectedHeaders);
@@ -199,11 +199,11 @@ void (async function addProxyCosmos() {
     },
   };
 
-  await waitFor(() => Spicetify.Player.origin, 50);
-  Spicetify.Player.origin._cosmos = new Proxy(_cosmos, handler);
-  Object.defineProperty(Spicetify, "CosmosAsync", {
+  await waitFor(() => Spotifier.Player.origin, 50);
+  Spotifier.Player.origin._cosmos = new Proxy(_cosmos, handler);
+  Object.defineProperty(Spotifier, "CosmosAsync", {
     get: () => {
-      return Spicetify.Player.origin?._cosmos;
+      return Spotifier.Player.origin?._cosmos;
     },
   });
 })();

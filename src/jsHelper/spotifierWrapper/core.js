@@ -1,16 +1,16 @@
-window.Spicetify = {
+window.Spotifier = {
   Player: {
     addEventListener: (type, callback) => {
-      if (!(type in Spicetify.Player.eventListeners)) {
-        Spicetify.Player.eventListeners[type] = [];
+      if (!(type in Spotifier.Player.eventListeners)) {
+        Spotifier.Player.eventListeners[type] = [];
       }
-      Spicetify.Player.eventListeners[type].push(callback);
+      Spotifier.Player.eventListeners[type].push(callback);
     },
     dispatchEvent: (event) => {
-      if (!(event.type in Spicetify.Player.eventListeners)) {
+      if (!(event.type in Spotifier.Player.eventListeners)) {
         return true;
       }
-      const stack = Spicetify.Player.eventListeners[event.type];
+      const stack = Spotifier.Player.eventListeners[event.type];
       for (let i = 0; i < stack.length; i++) {
         if (typeof stack[i] === "function") {
           stack[i](event);
@@ -20,59 +20,59 @@ window.Spicetify = {
     },
     eventListeners: {},
     seek: (p) => {
-      const duration = !Number.isInteger(p) && p >= 0 && p <= 1 ? Math.round(p * Spicetify.Player.origin._state.duration) : p;
-      Spicetify.Player.origin.seekTo(duration);
+      const duration = !Number.isInteger(p) && p >= 0 && p <= 1 ? Math.round(p * Spotifier.Player.origin._state.duration) : p;
+      Spotifier.Player.origin.seekTo(duration);
     },
     getProgress: () => {
-      const state = Spicetify.Player.origin._state;
+      const state = Spotifier.Player.origin._state;
       return (state.isPaused ? 0 : Date.now() - state.timestamp) + state.positionAsOfTimestamp;
     },
     getProgressPercent: () => {
-      const state = Spicetify.Player.origin._state;
-      return Spicetify.Player.getProgress() / state.duration;
+      const state = Spotifier.Player.origin._state;
+      return Spotifier.Player.getProgress() / state.duration;
     },
-    getDuration: () => Spicetify.Player.origin._state.duration,
+    getDuration: () => Spotifier.Player.origin._state.duration,
     setVolume: (v) => {
-      Spicetify.Platform.PlaybackAPI.setVolume(v);
+      Spotifier.Platform.PlaybackAPI.setVolume(v);
     },
     increaseVolume: () => {
-      Spicetify.Platform.PlaybackAPI.raiseVolume();
+      Spotifier.Platform.PlaybackAPI.raiseVolume();
     },
     decreaseVolume: () => {
-      Spicetify.Platform.PlaybackAPI.lowerVolume();
+      Spotifier.Platform.PlaybackAPI.lowerVolume();
     },
-    getVolume: () => Spicetify.Platform.PlaybackAPI._volume,
+    getVolume: () => Spotifier.Platform.PlaybackAPI._volume,
     next: () => {
-      Spicetify.Player.origin.skipToNext();
+      Spotifier.Player.origin.skipToNext();
     },
     back: () => {
-      Spicetify.Player.origin.skipToPrevious();
+      Spotifier.Player.origin.skipToPrevious();
     },
     togglePlay: () => {
-      if (Spicetify.Player.isPlaying()) Spicetify.Player.pause();
-      else Spicetify.Player.play();
+      if (Spotifier.Player.isPlaying()) Spotifier.Player.pause();
+      else Spotifier.Player.play();
     },
-    isPlaying: () => !Spicetify.Player.origin._state.isPaused,
+    isPlaying: () => !Spotifier.Player.origin._state.isPaused,
     toggleShuffle: () => {
-      Spicetify.Player.origin.setShuffle(!Spicetify.Player.origin._state.shuffle);
+      Spotifier.Player.origin.setShuffle(!Spotifier.Player.origin._state.shuffle);
     },
-    getShuffle: () => Spicetify.Player.origin._state.shuffle,
+    getShuffle: () => Spotifier.Player.origin._state.shuffle,
     setShuffle: (b) => {
-      Spicetify.Player.origin.setShuffle(b);
+      Spotifier.Player.origin.setShuffle(b);
     },
     toggleRepeat: () => {
-      Spicetify.Player.origin.setRepeat((Spicetify.Player.origin._state.repeat + 1) % 3);
+      Spotifier.Player.origin.setRepeat((Spotifier.Player.origin._state.repeat + 1) % 3);
     },
-    getRepeat: () => Spicetify.Player.origin._state.repeat,
+    getRepeat: () => Spotifier.Player.origin._state.repeat,
     setRepeat: (r) => {
-      Spicetify.Player.origin.setRepeat(r);
+      Spotifier.Player.origin.setRepeat(r);
     },
-    getMute: () => Spicetify.Player.getVolume() === 0,
+    getMute: () => Spotifier.Player.getVolume() === 0,
     toggleMute: () => {
-      Spicetify.Player.setMute(!Spicetify.Player.getMute());
+      Spotifier.Player.setMute(!Spotifier.Player.getMute());
     },
     setMute: (b) => {
-      if (b !== Spicetify.Player.getMute()) {
+      if (b !== Spotifier.Player.getMute()) {
         document.querySelector(".volume-bar__icon-button")?.click();
       }
     },
@@ -82,19 +82,19 @@ window.Spicetify = {
       seconds -= minutes * 60;
       return `${minutes}:${seconds > 9 ? "" : "0"}${String(seconds)}`;
     },
-    getHeart: () => Spicetify.Player.origin._state.item?.metadata["collection.in_collection"] === "true",
+    getHeart: () => Spotifier.Player.origin._state.item?.metadata["collection.in_collection"] === "true",
     pause: () => {
-      Spicetify.Player.origin.pause();
+      Spotifier.Player.origin.pause();
     },
     play: () => {
-      Spicetify.Player.origin.resume();
+      Spotifier.Player.origin.resume();
     },
     playUri: async (uri, context = {}, options = {}) => {
-      return await Spicetify.Player.origin.play({ uri: uri }, context, options);
+      return await Spotifier.Player.origin.play({ uri: uri }, context, options);
     },
     removeEventListener: (type, callback) => {
-      if (!(type in Spicetify.Player.eventListeners)) return;
-      const stack = Spicetify.Player.eventListeners[type];
+      if (!(type in Spotifier.Player.eventListeners)) return;
+      const stack = Spotifier.Player.eventListeners[type];
       for (let i = 0; i < stack.length; i++) {
         if (stack[i] === callback) {
           stack.splice(i, 1);
@@ -103,21 +103,21 @@ window.Spicetify = {
       }
     },
     skipBack: (amount = 15e3) => {
-      Spicetify.Player.origin.seekBackward(amount);
+      Spotifier.Player.origin.seekBackward(amount);
     },
     skipForward: (amount = 15e3) => {
-      Spicetify.Player.origin.seekForward(amount);
+      Spotifier.Player.origin.seekForward(amount);
     },
     setHeart: (b) => {
-      const uris = [Spicetify.Player.origin._state.item.uri];
+      const uris = [Spotifier.Player.origin._state.item.uri];
       if (b) {
-        Spicetify.Platform.LibraryAPI.add({ uris });
+        Spotifier.Platform.LibraryAPI.add({ uris });
       } else {
-        Spicetify.Platform.LibraryAPI.remove({ uris });
+        Spotifier.Platform.LibraryAPI.remove({ uris });
       }
     },
     toggleHeart: () => {
-      Spicetify.Player.setHeart(!Spicetify.Player.getHeart());
+      Spotifier.Player.setHeart(!Spotifier.Player.getHeart());
     },
   },
   test: () => {
@@ -127,7 +127,7 @@ window.Spicetify = {
 
       for (const method of methods) {
         if (objectToCheck[method] === undefined || objectToCheck[method] === null) {
-          console.error(`${name}.${method} is not available. Please open an issue in the Spicetify repository to inform us about it.`);
+          console.error(`${name}.${method} is not available. Please open an issue in the Spotifier repository to inform us about it.`);
           count--;
         }
       }
@@ -142,8 +142,8 @@ window.Spicetify = {
 
     const objectsToCheck = new Set([
       {
-        objectToCheck: Spicetify,
-        name: "Spicetify",
+        objectToCheck: Spotifier,
+        name: "Spotifier",
         methods: new Set([
           "Player",
           "addToQueue",
@@ -194,8 +194,8 @@ window.Spicetify = {
         ]),
       },
       {
-        objectToCheck: Spicetify.Player,
-        name: "Spicetify.Player",
+        objectToCheck: Spotifier.Player,
+        name: "Spotifier.Player",
         methods: new Set([
           "addEventListener",
           "back",
@@ -236,8 +236,8 @@ window.Spicetify = {
         ]),
       },
       {
-        objectToCheck: Spicetify.ReactComponent,
-        name: "Spicetify.ReactComponent",
+        objectToCheck: Spotifier.ReactComponent,
+        name: "Spotifier.ReactComponent",
         methods: new Set([
           "RightClickMenu",
           "ContextMenu",
@@ -273,8 +273,8 @@ window.Spicetify = {
         ]),
       },
       {
-        objectToCheck: Spicetify.ReactComponent.Cards,
-        name: "Spicetify.ReactComponent.Cards",
+        objectToCheck: Spotifier.ReactComponent.Cards,
+        name: "Spotifier.ReactComponent.Cards",
         methods: new Set([
           "Default",
           "Hero",
@@ -291,8 +291,8 @@ window.Spicetify = {
         ]),
       },
       {
-        objectToCheck: Spicetify.ReactHook,
-        name: "Spicetify.ReactHook",
+        objectToCheck: Spotifier.ReactHook,
+        name: "Spotifier.ReactHook",
         methods: new Set(["DragHandler", "useExtractedColor"]),
       },
     ]);

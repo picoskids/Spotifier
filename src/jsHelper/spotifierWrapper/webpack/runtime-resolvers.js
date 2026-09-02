@@ -21,14 +21,14 @@ function findLocaleTranslator({ cache, modules }) {
 
 export function exposeRuntimeResolvers({ cache, chunks, modules, functionModules, require }) {
   (function waitForSnackbar(attempt = 0) {
-    if (!Object.keys(Spicetify.Snackbar).length) {
+    if (!Object.keys(Spotifier.Snackbar).length) {
       setTimeout(() => waitForSnackbar(attempt + 1), Math.min(100 * 2 ** Math.min(attempt, 4), 1000));
       return;
     }
     // Snackbar notifications
     // https://github.com/iamhosseindhv/notistack
-    Spicetify.Snackbar = {
-      ...Spicetify.Snackbar,
+    Spotifier.Snackbar = {
+      ...Spotifier.Snackbar,
       SnackbarProvider: functionModules.find((m) => fnStr(m).includes("enqueueSnackbar called with invalid argument")),
       useSnackbar: functionModules.find((m) => fnStr(m).match(/^function\(\)\{return\(0,[\w$]+\.useContext\)\([\w$]+\)\}$/)),
     };
@@ -37,7 +37,7 @@ export function exposeRuntimeResolvers({ cache, chunks, modules, functionModules
   const localeModule = findLocaleTranslator({ cache, modules });
   if (localeModule) {
     const createUrlLocale = functionModules.find((m) => fnStr(m).includes("has") && fnStr(m).includes("baseName") && fnStr(m).includes("language"));
-    Spicetify.Locale = {
+    Spotifier.Locale = {
       get _relativeTimeFormat() {
         return localeModule._relativeTimeFormat;
       },
@@ -87,11 +87,11 @@ export function exposeRuntimeResolvers({ cache, chunks, modules, functionModules
     };
   }
 
-  if (Spicetify.Locale) Spicetify.Locale._supportedLocales = cache.find((m) => typeof m?.ja === "string");
+  if (Spotifier.Locale) Spotifier.Locale._supportedLocales = cache.find((m) => typeof m?.ja === "string");
 
-  Object.defineProperty(Spicetify, "Queue", {
+  Object.defineProperty(Spotifier, "Queue", {
     get() {
-      return Spicetify.Player.origin?._queue?._state ?? Spicetify.Player.origin?._queue?._queue;
+      return Spotifier.Player.origin?._queue?._state ?? Spotifier.Player.origin?._queue?._queue;
     },
   });
 
@@ -100,45 +100,45 @@ export function exposeRuntimeResolvers({ cache, chunks, modules, functionModules
       fnStr(value).includes("main-confirmDialog-container") ||
       (fnStr(value).includes("confirmDialog") && fnStr(value).includes("shouldCloseOnEsc") && fnStr(value).includes("isOpen")),
   );
-  if (!Spicetify.ReactComponent?.ConfirmDialog && confirmDialogChunk) {
-    Spicetify.ReactComponent.ConfirmDialog = Object.values(require(confirmDialogChunk[0])).find((m) => typeof m === "object");
+  if (!Spotifier.ReactComponent?.ConfirmDialog && confirmDialogChunk) {
+    Spotifier.ReactComponent.ConfirmDialog = Object.values(require(confirmDialogChunk[0])).find((m) => typeof m === "object");
   } else {
-    Spicetify.ReactComponent.ConfirmDialog = functionModules.find(
+    Spotifier.ReactComponent.ConfirmDialog = functionModules.find(
       (m) => fnStr(m).includes("isOpen") && fnStr(m).includes("shouldCloseOnEsc") && fnStr(m).includes("onClose"),
     );
   }
 
   const contextMenuChunk = chunks.find(([, value]) => fnStr(value).includes("handleContextMenu"));
   if (contextMenuChunk) {
-    Spicetify.ReactComponent.ContextMenu = Object.values(require(contextMenuChunk[0])).find((m) => typeof m === "function");
+    Spotifier.ReactComponent.ContextMenu = Object.values(require(contextMenuChunk[0])).find((m) => typeof m === "function");
   }
 
   const playlistMenuChunk = chunks.find(
     ([, value]) => fnStr(value).includes('value:"playlist"') && fnStr(value).includes("canView") && fnStr(value).includes("permissions"),
   );
-  if (playlistMenuChunk && !Spicetify.ReactComponent?.PlaylistMenu) {
-    Spicetify.ReactComponent.PlaylistMenu = Object.values(require(playlistMenuChunk[0])).find(
+  if (playlistMenuChunk && !Spotifier.ReactComponent?.PlaylistMenu) {
+    Spotifier.ReactComponent.PlaylistMenu = Object.values(require(playlistMenuChunk[0])).find(
       (m) => typeof m === "function" || typeof m === "object",
     );
   }
 
   const infiniteQueryChunk = chunks.find(([_, value]) => fnStr(value).includes("fetchPreviousPage") && fnStr(value).includes("getOptimisticResult"));
   if (infiniteQueryChunk) {
-    Spicetify.ReactQuery.useInfiniteQuery = Object.values(require(infiniteQueryChunk[0])).find((m) => typeof m === "function");
+    Spotifier.ReactQuery.useInfiniteQuery = Object.values(require(infiniteQueryChunk[0])).find((m) => typeof m === "function");
   }
 
-  if (Spicetify.Color) Spicetify.Color.CSSFormat = modules.find((m) => typeof m?.RGBA === "number");
+  if (Spotifier.Color) Spotifier.Color.CSSFormat = modules.find((m) => typeof m?.RGBA === "number");
 
   // Combine snackbar and notification
   (function bindShowNotification(attempt = 0) {
-    if (!Spicetify.Snackbar?.enqueueSnackbar && !Spicetify.showNotification) {
+    if (!Spotifier.Snackbar?.enqueueSnackbar && !Spotifier.showNotification) {
       setTimeout(() => bindShowNotification(attempt + 1), Math.min(250 * 2 ** Math.min(attempt, 4), 1000));
       return;
     }
 
-    if (Spicetify.Snackbar?.enqueueSnackbar) {
-      Spicetify.showNotification = (message, isError, msTimeout) => {
-        Spicetify.Snackbar.enqueueSnackbar(message, {
+    if (Spotifier.Snackbar?.enqueueSnackbar) {
+      Spotifier.showNotification = (message, isError, msTimeout) => {
+        Spotifier.Snackbar.enqueueSnackbar(message, {
           variant: isError ? "error" : "default",
           autoHideDuration: msTimeout,
         });
@@ -147,15 +147,15 @@ export function exposeRuntimeResolvers({ cache, chunks, modules, functionModules
       return;
     }
 
-    Spicetify.Snackbar.enqueueSnackbar = (message, { variant = "default", autoHideDuration } = {}) => {
+    Spotifier.Snackbar.enqueueSnackbar = (message, { variant = "default", autoHideDuration } = {}) => {
       isError = variant === "error";
-      Spicetify.showNotification(message, isError, autoHideDuration);
+      Spotifier.showNotification(message, isError, autoHideDuration);
     };
   })();
 
   // Image color extractor
   void (async function bindColorExtractor(attempt = 0) {
-    if (!Spicetify.GraphQL.Request) {
+    if (!Spotifier.GraphQL.Request) {
       setTimeout(() => bindColorExtractor(attempt + 1), Math.min(10 * 2 ** Math.min(attempt, 6), 1000));
       return;
     }
@@ -164,8 +164,8 @@ export function exposeRuntimeResolvers({ cache, chunks, modules, functionModules
     );
     const fallbackPreset = modules.find((m) => m?.colorDark);
 
-    Spicetify.extractColorPreset = async (image) => {
-      const analysis = await imageAnalysis(Spicetify.GraphQL.Request, image);
+    Spotifier.extractColorPreset = async (image) => {
+      const analysis = await imageAnalysis(Spotifier.GraphQL.Request, image);
       for (const result of analysis) {
         if ("isFallback" in result === false) result.isFallback = fallbackPreset === result;
       }

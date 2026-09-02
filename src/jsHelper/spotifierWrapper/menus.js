@@ -1,6 +1,6 @@
 import { createIconComponent } from "./icons.js";
 
-Spicetify.ContextMenuV2 = (() => {
+Spotifier.ContextMenuV2 = (() => {
   const registeredItems = new Map();
 
   function parseProps(props) {
@@ -30,14 +30,14 @@ Spicetify.ContextMenuV2 = (() => {
       this._trailingIcon = trailingIcon;
       this._divider = divider;
 
-      this._element = Spicetify.ReactJSX.jsx(() => {
-        const [_children, setChildren] = Spicetify.React.useState(this._children);
-        const [_disabled, setDisabled] = Spicetify.React.useState(this._disabled);
-        const [_leadingIcon, setLeadingIcon] = Spicetify.React.useState(this._leadingIcon);
-        const [_trailingIcon, setTrailingIcon] = Spicetify.React.useState(this._trailingIcon);
-        const [_divider, setDivider] = Spicetify.React.useState(this._divider);
+      this._element = Spotifier.ReactJSX.jsx(() => {
+        const [_children, setChildren] = Spotifier.React.useState(this._children);
+        const [_disabled, setDisabled] = Spotifier.React.useState(this._disabled);
+        const [_leadingIcon, setLeadingIcon] = Spotifier.React.useState(this._leadingIcon);
+        const [_trailingIcon, setTrailingIcon] = Spotifier.React.useState(this._trailingIcon);
+        const [_divider, setDivider] = Spotifier.React.useState(this._divider);
 
-        Spicetify.React.useEffect(() => {
+        Spotifier.React.useEffect(() => {
           this._setChildren = setChildren;
           this._setDisabled = setDisabled;
           this._setIcon = setLeadingIcon;
@@ -53,10 +53,10 @@ Spicetify.ContextMenuV2 = (() => {
           };
         });
 
-        const context = Spicetify.React.useContext(Spicetify.ContextMenuV2._context) ?? {};
+        const context = Spotifier.React.useContext(Spotifier.ContextMenuV2._context) ?? {};
 
-        return Spicetify.React.createElement(
-          Spicetify.ReactComponent.MenuItem,
+        return Spotifier.React.createElement(
+          Spotifier.ReactComponent.MenuItem,
           {
             disabled: _disabled,
             divider: _divider,
@@ -112,10 +112,10 @@ Spicetify.ContextMenuV2 = (() => {
     }
 
     register() {
-      Spicetify.ContextMenuV2.registerItem(this._element, this.shouldAdd);
+      Spotifier.ContextMenuV2.registerItem(this._element, this.shouldAdd);
     }
     deregister() {
-      Spicetify.ContextMenuV2.unregisterItem(this._element);
+      Spotifier.ContextMenuV2.unregisterItem(this._element);
     }
   }
 
@@ -138,15 +138,15 @@ Spicetify.ContextMenuV2 = (() => {
       this._divider = divider;
       this._items = items;
       this._depth = depth;
-      this._element = Spicetify.ReactJSX.jsx(() => {
-        const [_text, setText] = Spicetify.React.useState(this._text);
-        const [_disabled, setDisabled] = Spicetify.React.useState(this._disabled);
-        const [_leadingIcon, setLeadingIcon] = Spicetify.React.useState(this._leadingIcon);
-        const [_divider, setDivider] = Spicetify.React.useState(this._divider);
-        const [_items, setItems] = Spicetify.React.useState(this._items);
-        const [_depth, setDepth] = Spicetify.React.useState(this._depth);
+      this._element = Spotifier.ReactJSX.jsx(() => {
+        const [_text, setText] = Spotifier.React.useState(this._text);
+        const [_disabled, setDisabled] = Spotifier.React.useState(this._disabled);
+        const [_leadingIcon, setLeadingIcon] = Spotifier.React.useState(this._leadingIcon);
+        const [_divider, setDivider] = Spotifier.React.useState(this._divider);
+        const [_items, setItems] = Spotifier.React.useState(this._items);
+        const [_depth, setDepth] = Spotifier.React.useState(this._depth);
 
-        Spicetify.React.useEffect(() => {
+        Spotifier.React.useEffect(() => {
           this._setText = setText;
           this._setDisabled = setDisabled;
           this._setLeadingIcon = setLeadingIcon;
@@ -163,11 +163,11 @@ Spicetify.ContextMenuV2 = (() => {
           };
         });
 
-        const context = Spicetify.React.useContext(Spicetify.ContextMenuV2._context) ?? {};
+        const context = Spotifier.React.useContext(Spotifier.ContextMenuV2._context) ?? {};
         const { props, trigger, target } = context;
 
-        return Spicetify.React.createElement(
-          Spicetify.ReactComponent.MenuSubMenuItem,
+        return Spotifier.React.createElement(
+          Spotifier.ReactComponent.MenuSubMenuItem,
           {
             displayText: _text,
             divider: _divider,
@@ -253,9 +253,9 @@ Spicetify.ContextMenuV2 = (() => {
   }
 
   const renderItems = () => {
-    const { props, trigger, target } = Spicetify.React.useContext(Spicetify.ContextMenuV2._context) ?? {};
+    const { props, trigger, target } = Spotifier.React.useContext(Spotifier.ContextMenuV2._context) ?? {};
 
-    return Spicetify.React.useMemo(
+    return Spotifier.React.useMemo(
       () =>
         Array.from(registeredItems.entries())
           .map(([item, shouldAdd]) => shouldAdd?.(props, trigger, target) && item)
@@ -267,11 +267,11 @@ Spicetify.ContextMenuV2 = (() => {
   return { parseProps, Item, ItemSubMenu, registerItem, unregisterItem, renderItems };
 })();
 
-Spicetify.Menu = (() => {
+Spotifier.Menu = (() => {
   const shouldAdd = (_, trigger, target) =>
     trigger === "click" && (target.classList.contains("main-userWidget-boxCondensed") || target.classList.contains("main-userWidget-box"));
 
-  class Item extends Spicetify.ContextMenuV2.Item {
+  class Item extends Spotifier.ContextMenuV2.Item {
     constructor(children, isEnabled, onClick, leadingIcon) {
       super({ children, leadingIcon, onClick: (_, self) => onClick(self), shouldAdd });
 
@@ -291,7 +291,7 @@ Spicetify.Menu = (() => {
     }
   }
 
-  class SubMenu extends Spicetify.ContextMenuV2.ItemSubMenu {
+  class SubMenu extends Spotifier.ContextMenuV2.ItemSubMenu {
     constructor(text, items, leadingIcon) {
       super({ text, leadingIcon, items, shouldAdd });
     }
@@ -314,10 +314,10 @@ Spicetify.Menu = (() => {
   return { Item, SubMenu };
 })();
 
-Spicetify.ContextMenu = (() => {
-  const iconList = Object.keys(Spicetify.SVGIcons);
+Spotifier.ContextMenu = (() => {
+  const iconList = Object.keys(Spotifier.SVGIcons);
 
-  class Item extends Spicetify.ContextMenuV2.Item {
+  class Item extends Spotifier.ContextMenuV2.Item {
     static iconList = iconList;
 
     constructor(name, onClick, shouldAdd, icon, trailingIcon, disabled) {
@@ -329,11 +329,11 @@ Spicetify.ContextMenu = (() => {
         leadingIcon: icon,
         trailingIcon,
         onClick: (context) => {
-          const [uris, uids, contextUri] = Spicetify.ContextMenuV2.parseProps(context.props);
+          const [uris, uids, contextUri] = Spotifier.ContextMenuV2.parseProps(context.props);
           onClick(uris, uids, contextUri);
         },
         shouldAdd: (props) => {
-          const parsedProps = Spicetify.ContextMenuV2.parseProps(props);
+          const parsedProps = Spotifier.ContextMenuV2.parseProps(props);
           return parsedProps && shouldAddItem(...parsedProps);
         },
       });
@@ -354,7 +354,7 @@ Spicetify.ContextMenu = (() => {
     }
   }
 
-  class SubMenu extends Spicetify.ContextMenuV2.ItemSubMenu {
+  class SubMenu extends Spotifier.ContextMenuV2.ItemSubMenu {
     static iconList = iconList;
 
     constructor(name, items, shouldAdd, disabled, icon) {
@@ -366,7 +366,7 @@ Spicetify.ContextMenu = (() => {
         leadingIcon: icon,
         items,
         shouldAdd: (props) => {
-          const parsedProps = Spicetify.ContextMenuV2.parseProps(props);
+          const parsedProps = Spotifier.ContextMenuV2.parseProps(props);
           return parsedProps && shouldAddItem(...parsedProps);
         },
       });

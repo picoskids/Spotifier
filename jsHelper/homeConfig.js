@@ -1,4 +1,4 @@
-SpicetifyHomeConfig = {};
+SpotifierHomeConfig = {};
 
 (async () => {
 	// Status enum
@@ -11,13 +11,13 @@ SpicetifyHomeConfig = {};
 	const statusDic = {};
 	let mounted = false;
 
-	SpicetifyHomeConfig.arrange = (sections) => {
+	SpotifierHomeConfig.arrange = (sections) => {
 		mounted = true;
 		if (list) {
 			return list;
 		}
-		const stickList = (localStorage.getItem("spicetify-home-config:stick") || "").split(",");
-		const lowList = (localStorage.getItem("spicetify-home-config:low") || "").split(",");
+		const stickList = (localStorage.getItem("spotifier-home-config:stick") || "").split(",");
+		const lowList = (localStorage.getItem("spotifier-home-config:low") || "").split(",");
 		const stickSections = [];
 		const lowSections = [];
 		for (const uri of stickList) {
@@ -59,7 +59,7 @@ SpicetifyHomeConfig = {};
 `;
 	const containerStyle = document.createElement("style");
 	containerStyle.innerHTML = `
-#spicetify-home-config {
+#spotifier-home-config {
     position: relative;
     width: 100%;
     height: 0;
@@ -69,7 +69,7 @@ SpicetifyHomeConfig = {};
     gap: 5px;
     z-index: 9999;
 }
-#spicetify-home-config button {
+#spotifier-home-config button {
     min-width: 60px;
     height: 40px;
     border-radius: 3px;
@@ -77,13 +77,13 @@ SpicetifyHomeConfig = {};
     color: var(--spice-text);
     border: 1px solid var(--spice-text);
 }
-#spicetify-home-config button:disabled {
+#spotifier-home-config button:disabled {
     color: var(--spice-button-disabled);
 }
 `;
 
 	const container = document.createElement("div");
-	container.id = "spicetify-home-config";
+	container.id = "spotifier-home-config";
 	container.append(containerStyle, up, down, lower, stick);
 	document.head.append(sectionStyle);
 	let elem = [];
@@ -106,11 +106,11 @@ SpicetifyHomeConfig = {};
 			}
 
 			localStorage.setItem(
-				"spicetify-home-config:stick",
+				"spotifier-home-config:stick",
 				stick.map((a) => a.dataset.uri)
 			);
 			localStorage.setItem(
-				"spicetify-home-config:low",
+				"spotifier-home-config:low",
 				low.map((a) => a.dataset.uri)
 			);
 
@@ -172,9 +172,9 @@ SpicetifyHomeConfig = {};
 		}
 	}
 
-	await new Promise((res) => Spicetify.Events.webpackLoaded.on(res));
+	await new Promise((res) => Spotifier.Events.webpackLoaded.on(res));
 
-	SpicetifyHomeConfig.menu = new Spicetify.Menu.Item(
+	SpotifierHomeConfig.menu = new Spotifier.Menu.Item(
 		"Home config",
 		false,
 		(self) => {
@@ -185,28 +185,28 @@ SpicetifyHomeConfig = {};
 				removeInteraction();
 			}
 		},
-		Spicetify.SVGIcons["grid-view"]
+		Spotifier.SVGIcons["grid-view"]
 	);
 
-	SpicetifyHomeConfig.addToMenu = () => {
-		SpicetifyHomeConfig.menu.register();
+	SpotifierHomeConfig.addToMenu = () => {
+		SpotifierHomeConfig.menu.register();
 	};
-	SpicetifyHomeConfig.removeMenu = () => {
-		SpicetifyHomeConfig.menu.setState(false);
-		SpicetifyHomeConfig.menu.deregister();
+	SpotifierHomeConfig.removeMenu = () => {
+		SpotifierHomeConfig.menu.setState(false);
+		SpotifierHomeConfig.menu.deregister();
 	};
 
-	await new Promise((res) => Spicetify.Events.platformLoaded.on(res));
+	await new Promise((res) => Spotifier.Events.platformLoaded.on(res));
 	// Init
-	if (Spicetify.Platform.History.location.pathname === "/") {
-		SpicetifyHomeConfig.addToMenu();
+	if (Spotifier.Platform.History.location.pathname === "/") {
+		SpotifierHomeConfig.addToMenu();
 	}
 
-	Spicetify.Platform.History.listen(({ pathname }) => {
+	Spotifier.Platform.History.listen(({ pathname }) => {
 		if (pathname === "/") {
-			SpicetifyHomeConfig.addToMenu();
+			SpotifierHomeConfig.addToMenu();
 		} else {
-			SpicetifyHomeConfig.removeMenu();
+			SpotifierHomeConfig.removeMenu();
 		}
 	});
 })();

@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/spicetify/cli/src/utils"
+	"github.com/spotifier/cli/src/utils"
 )
 
 func Patch() {

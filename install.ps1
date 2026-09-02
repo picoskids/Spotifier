@@ -2,8 +2,8 @@ $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 #region Variables
-$spicetifyFolderPath = "$env:LOCALAPPDATA\spicetify"
-$spicetifyOldFolderPath = "$HOME\spicetify-cli"
+$spotifierFolderPath = "$env:LOCALAPPDATA\spotifier"
+$spotifierOldFolderPath = "$HOME\spotifier-cli"
 #endregion Variables
 
 #region Functions
@@ -47,20 +47,20 @@ function Test-PowerShellVersion {
   }
 }
 
-function Move-OldSpicetifyFolder {
+function Move-OldSpotifierFolder {
   [CmdletBinding()]
   param ()
   process {
-    if (Test-Path -Path $spicetifyOldFolderPath) {
-      Write-Host -Object 'Moving the old spicetify folder...' -NoNewline
-      Copy-Item -Path "$spicetifyOldFolderPath\*" -Destination $spicetifyFolderPath -Recurse -Force
-      Remove-Item -Path $spicetifyOldFolderPath -Recurse -Force
+    if (Test-Path -Path $spotifierOldFolderPath) {
+      Write-Host -Object 'Moving the old spotifier folder...' -NoNewline
+      Copy-Item -Path "$spotifierOldFolderPath\*" -Destination $spotifierFolderPath -Recurse -Force
+      Remove-Item -Path $spotifierOldFolderPath -Recurse -Force
       Write-Success
     }
   }
 }
 
-function Get-Spicetify {
+function Get-Spotifier {
   [CmdletBinding()]
   param ()
   begin {
@@ -78,23 +78,23 @@ function Get-Spicetify {
         $targetVersion = $v
       }
       else {
-        Write-Warning -Message "You have specified an invalid spicetify version: $v `nThe version must be in the following format: 1.2.3"
+        Write-Warning -Message "You have specified an invalid spotifier version: $v `nThe version must be in the following format: 1.2.3"
         Pause
         exit
       }
     }
     else {
-      Write-Host -Object 'Fetching the latest spicetify version...' -NoNewline
-      $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/spicetify/cli/releases/latest'
+      Write-Host -Object 'Fetching the latest spotifier version...' -NoNewline
+      $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/ValveularGT/Spotifier/releases/latest'
       $targetVersion = $latestRelease.tag_name -replace 'v', ''
       Write-Success
     }
-    $archivePath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "spicetify.zip")
+    $archivePath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "spotifier.zip")
   }
   process {
-    Write-Host -Object "Downloading spicetify v$targetVersion..." -NoNewline
+    Write-Host -Object "Downloading spotifier v$targetVersion..." -NoNewline
     $Parameters = @{
-      Uri            = "https://github.com/spicetify/cli/releases/download/v$targetVersion/spicetify-$targetVersion-windows-$architecture.zip"
+      Uri            = "https://github.com/ValveularGT/Spotifier/releases/download/v$targetVersion/spotifier-$targetVersion-windows-$architecture.zip"
       UseBasicParsin = $true
       OutFile        = $archivePath
     }
@@ -106,45 +106,45 @@ function Get-Spicetify {
   }
 }
 
-function Add-SpicetifyToPath {
+function Add-SpotifierToPath {
   [CmdletBinding()]
   param ()
   begin {
-    Write-Host -Object 'Making spicetify available in the PATH...' -NoNewline
+    Write-Host -Object 'Making spotifier available in the PATH...' -NoNewline
     $user = [EnvironmentVariableTarget]::User
     $path = [Environment]::GetEnvironmentVariable('PATH', $user)
   }
   process {
-    $path = $path -replace "$([regex]::Escape($spicetifyOldFolderPath))\\*;*", ''
-    if ($path -notlike "*$spicetifyFolderPath*") {
-      $path = "$path;$spicetifyFolderPath"
+    $path = $path -replace "$([regex]::Escape($spotifierOldFolderPath))\\*;*", ''
+    if ($path -notlike "*$spotifierFolderPath*") {
+      $path = "$path;$spotifierFolderPath"
     }
   }
   end {
     [Environment]::SetEnvironmentVariable('PATH', $path, $user)
-    if (($env:PATH -split ';') -notcontains $spicetifyFolderPath) {
-      $env:PATH = "$env:PATH;$spicetifyFolderPath"
+    if (($env:PATH -split ';') -notcontains $spotifierFolderPath) {
+      $env:PATH = "$env:PATH;$spotifierFolderPath"
     }
     Write-Success
   }
 }
 
-function Install-Spicetify {
+function Install-Spotifier {
   [CmdletBinding()]
   param ()
   begin {
-    Write-Host -Object 'Installing spicetify...'
+    Write-Host -Object 'Installing spotifier...'
   }
   process {
-    $archivePath = Get-Spicetify
-    Write-Host -Object 'Extracting spicetify...' -NoNewline
-    Expand-Archive -Path $archivePath -DestinationPath $spicetifyFolderPath -Force
+    $archivePath = Get-Spotifier
+    Write-Host -Object 'Extracting spotifier...' -NoNewline
+    Expand-Archive -Path $archivePath -DestinationPath $spotifierFolderPath -Force
     Write-Success
-    Add-SpicetifyToPath
+    Add-SpotifierToPath
   }
   end {
     Remove-Item -Path $archivePath -Force -ErrorAction 'SilentlyContinue'
-    Write-Host -Object 'spicetify was successfully installed!' -ForegroundColor 'Green'
+    Write-Host -Object 'spotifier was successfully installed!' -ForegroundColor 'Green'
   }
 }
 #endregion Functions
@@ -175,7 +175,7 @@ if (-not (Test-Admin)) {
   )
   $choice = $Host.UI.PromptForChoice('', 'Do you want to abort the installation process?', $choices, 0)
   if ($choice -eq 0) {
-    Write-Host -Object 'spicetify installation aborted' -ForegroundColor 'Yellow'
+    Write-Host -Object 'spotifier installation aborted' -ForegroundColor 'Yellow'
     Pause
     exit
   }
@@ -185,31 +185,43 @@ else {
 }
 #endregion Checks
 
-#region Spicetify
-Move-OldSpicetifyFolder
-Install-Spicetify
+#region Spotifier
+Move-OldSpotifierFolder
+Install-Spotifier
 Write-Host -Object "`nRun" -NoNewline
-Write-Host -Object ' spicetify -h ' -NoNewline -ForegroundColor 'Cyan'
+Write-Host -Object ' spotifier -h ' -NoNewline -ForegroundColor 'Cyan'
 Write-Host -Object 'to get started'
-#endregion Spicetify
+#endregion Spotifier
 
 #region Marketplace
 $Host.UI.RawUI.Flushinputbuffer()
 $choices = [System.Management.Automation.Host.ChoiceDescription[]] @(
-    (New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Install Spicetify Marketplace."),
-    (New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Do not install Spicetify Marketplace.")
+    (New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Install Spotifier Marketplace."),
+    (New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Do not install Spotifier Marketplace.")
 )
-$choice = $Host.UI.PromptForChoice('', "`nDo you also want to install Spicetify Marketplace? It will become available within the Spotify client, where you can easily install themes and extensions.", $choices, 0)
+$choice = $Host.UI.PromptForChoice('', "`nDo you also want to install Spotifier Marketplace? It will become available within the Spotify client, where you can easily install themes and extensions.", $choices, 0)
 if ($choice -eq 1) {
-  Write-Host -Object 'spicetify Marketplace installation aborted' -ForegroundColor 'Yellow'
+  Write-Host -Object 'spotifier Marketplace installation aborted' -ForegroundColor 'Yellow'
 }
 else {
-  Write-Host -Object 'Starting the spicetify Marketplace installation script..'
+  Write-Host -Object 'Starting the spotifier Marketplace installation script..'
   $Parameters = @{
-    Uri             = 'https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.ps1'
+    Uri             = 'https://raw.githubusercontent.com/spotifier/spotifier-marketplace/main/resources/install.ps1'
     UseBasicParsing = $true
   }
   Invoke-WebRequest @Parameters | Invoke-Expression
 }
 #endregion Marketplace
+
+#region Autostart
+$Host.UI.RawUI.Flushinputbuffer()
+$choices = [System.Management.Automation.Host.ChoiceDescription[]] @(
+    (New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Enable autostart."),
+    (New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Do not enable autostart.")
+)
+$choice = $Host.UI.PromptForChoice('', "`nAlso re-apply spotifier automatically every time you log in? Without this, a Spotify update or PC restart can silently undo your customization until you rerun 'spotifier apply' yourself.", $choices, 0)
+if ($choice -eq 0) {
+  & "$spotifierFolderPath\spotifier.exe" autostart enable
+}
+#endregion Autostart
 #endregion Main

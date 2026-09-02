@@ -5,12 +5,12 @@
 
 /// <reference path="../globals.d.ts" />
 (function FullAppDisplay() {
-	if (!Spicetify.Keyboard || !Spicetify.React || !Spicetify.ReactDOM) {
+	if (!Spotifier.Keyboard || !Spotifier.React || !Spotifier.ReactDOM) {
 		setTimeout(FullAppDisplay, 200);
 		return;
 	}
 
-	const { React: react, ReactDOM: reactDOM } = Spicetify;
+	const { React: react, ReactDOM: reactDOM } = Spotifier;
 	const { useState, useEffect, useRef } = react;
 
 	const CONFIG = getConfig();
@@ -318,8 +318,8 @@ body.video-full-screen.video-full-screen--hide-ui {
 	};
 
 	const ProgressBar = () => {
-		const [progress, setProgress] = useState(Spicetify.Player.getProgress());
-		const duration = Spicetify.Platform.PlayerAPI._state.duration;
+		const [progress, setProgress] = useState(Spotifier.Player.getProgress());
+		const duration = Spotifier.Platform.PlayerAPI._state.duration;
 
 		const progressDivRef = useRef(null);
 		const [isDragging, setIsDragging] = useState(false);
@@ -330,8 +330,8 @@ body.video-full-screen.video-full-screen--hide-ui {
 			}
 
 			const update = ({ data }) => setProgress(data);
-			Spicetify.Player.addEventListener("onprogress", update);
-			return () => Spicetify.Player.removeEventListener("onprogress", update);
+			Spotifier.Player.addEventListener("onprogress", update);
+			return () => Spotifier.Player.removeEventListener("onprogress", update);
 		}, [isDragging]);
 
 		// Handle click on progress bar to set progress
@@ -344,7 +344,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 			const containerRect = container.getBoundingClientRect();
 			const clickX = e.clientX - containerRect.left;
 			const newProgress = (clickX / containerRect.width) * duration;
-			Spicetify.Player.seek(newProgress);
+			Spotifier.Player.seek(newProgress);
 			setProgress(newProgress);
 		};
 
@@ -366,7 +366,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 				return;
 			}
 
-			Spicetify.Player.seek(progress);
+			Spotifier.Player.seek(progress);
 			setIsDragging(false);
 		};
 
@@ -392,7 +392,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 		return react.createElement(
 			"div",
 			{ id: "fad-progress-container" },
-			react.createElement("span", { id: "fad-elapsed" }, Spicetify.Player.formatTime(progress)),
+			react.createElement("span", { id: "fad-elapsed" }, Spotifier.Player.formatTime(progress)),
 			react.createElement(
 				"div",
 				{
@@ -412,31 +412,31 @@ body.video-full-screen.video-full-screen--hide-ui {
 					})
 				)
 			),
-			react.createElement("span", { id: "fad-duration" }, Spicetify.Player.formatTime(duration))
+			react.createElement("span", { id: "fad-duration" }, Spotifier.Player.formatTime(duration))
 		);
 	};
 
 	const PlayerControls = () => {
-		const [value, setValue] = useState(Spicetify.Player.isPlaying());
+		const [value, setValue] = useState(Spotifier.Player.isPlaying());
 		useEffect(() => {
 			const update = ({ data }) => setValue(!data.isPaused);
-			Spicetify.Player.addEventListener("onplaypause", update);
-			return () => Spicetify.Player.removeEventListener("onplaypause", update);
+			Spotifier.Player.addEventListener("onplaypause", update);
+			return () => Spotifier.Player.removeEventListener("onplaypause", update);
 		});
 		return react.createElement(
 			"div",
 			{ id: "fad-controls" },
 			react.createElement(ButtonIcon, {
-				icon: Spicetify.SVGIcons["skip-back"],
-				onClick: Spicetify.Player.back,
+				icon: Spotifier.SVGIcons["skip-back"],
+				onClick: Spotifier.Player.back,
 			}),
 			react.createElement(ButtonIcon, {
-				icon: Spicetify.SVGIcons[value ? "pause" : "play"],
-				onClick: Spicetify.Player.togglePlay,
+				icon: Spotifier.SVGIcons[value ? "pause" : "play"],
+				onClick: Spotifier.Player.togglePlay,
 			}),
 			react.createElement(ButtonIcon, {
-				icon: Spicetify.SVGIcons["skip-forward"],
-				onClick: Spicetify.Player.next,
+				icon: Spotifier.SVGIcons["skip-forward"],
+				onClick: Spotifier.Player.next,
 			})
 		);
 	};
@@ -451,18 +451,18 @@ body.video-full-screen.video-full-screen--hide-ui {
 				album: "",
 				releaseDate: "",
 				cover: "",
-				heart: Spicetify.Player.getHeart(),
+				heart: Spotifier.Player.getHeart(),
 			};
 			this.currTrackImg = new Image();
 			this.nextTrackImg = new Image();
-			this.mousetrap = new Spicetify.Mousetrap();
+			this.mousetrap = new Spotifier.Mousetrap();
 		}
 
 		async getAlbumDate(uri) {
-			const { getAlbum } = Spicetify.GraphQL.Definitions;
-			const { errors, data } = await Spicetify.GraphQL.Request(getAlbum, {
+			const { getAlbum } = Spotifier.GraphQL.Definitions;
+			const { errors, data } = await Spotifier.GraphQL.Request(getAlbum, {
 				uri,
-				locale: Spicetify.Locale.getLocale(),
+				locale: Spotifier.Locale.getLocale(),
 				offset: 0,
 				limit: 10,
 			});
@@ -486,7 +486,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 		}
 
 		async fetchInfo() {
-			const meta = Spicetify.Player.data.item.metadata;
+			const meta = Spotifier.Player.data.item.metadata;
 
 			// prepare title
 			let rawTitle = meta.title;
@@ -529,7 +529,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 					artist: artistName || "",
 					album: albumText || "",
 					releaseDate: releaseDate || "",
-					heart: Spicetify.Player.getHeart(),
+					heart: Spotifier.Player.getHeart(),
 				});
 				return;
 			}
@@ -548,7 +548,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 					album: albumText || "",
 					releaseDate: releaseDate || "",
 					cover: bgImage,
-					heart: Spicetify.Player.getHeart(),
+					heart: Spotifier.Player.getHeart(),
 				});
 			};
 			this.currTrackImg.onerror = () => {
@@ -607,7 +607,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 
 		componentDidMount() {
 			this.updateInfo = this.fetchInfo.bind(this);
-			Spicetify.Player.addEventListener("songchange", this.updateInfo);
+			Spotifier.Player.addEventListener("songchange", this.updateInfo);
 			this.updateInfo();
 
 			updateVisual = () => {
@@ -641,14 +641,14 @@ body.video-full-screen.video-full-screen--hide-ui {
 				updateVisual();
 			};
 
-			Spicetify.Platform.PlayerAPI._events.addListener("queue_update", this.onQueueChange);
+			Spotifier.Platform.PlayerAPI._events.addListener("queue_update", this.onQueueChange);
 			this.mousetrap.bind("esc", deactivate);
 			window.dispatchEvent(new Event("fad-request"));
 		}
 
 		componentWillUnmount() {
-			Spicetify.Player.removeEventListener("songchange", this.updateInfo);
-			Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", this.onQueueChange);
+			Spotifier.Player.removeEventListener("songchange", this.updateInfo);
+			Spotifier.Platform.PlayerAPI._events.removeListener("queue_update", this.onQueueChange);
 			this.mousetrap.unbind("esc");
 		}
 
@@ -705,12 +705,12 @@ body.video-full-screen.video-full-screen--hide-ui {
 										{
 											id: "fad-heart",
 											onClick: () => {
-												Spicetify.Player.toggleHeart();
+												Spotifier.Player.toggleHeart();
 												this.setState({ heart: !this.state.heart });
 											},
 										},
 										react.createElement(DisplayIcon, {
-											icon: Spicetify.SVGIcons[this.state.heart ? "heart-active" : "heart"],
+											icon: Spotifier.SVGIcons[this.state.heart ? "heart-active" : "heart"],
 											size: 50,
 										})
 									)
@@ -727,19 +727,19 @@ body.video-full-screen.video-full-screen--hide-ui {
 							react.createElement(SubInfo, {
 								id: "fad-artist",
 								text: this.state.artist,
-								icon: Spicetify.SVGIcons.artist,
+								icon: Spotifier.SVGIcons.artist,
 							}),
 							CONFIG.showAlbum &&
 								react.createElement(SubInfo, {
 									id: "fad-album",
 									text: this.state.album,
-									icon: Spicetify.SVGIcons.album,
+									icon: Spotifier.SVGIcons.album,
 								}),
 							CONFIG.showReleaseDate &&
 								react.createElement(SubInfo, {
 									id: "fad-release-date",
 									text: this.state.releaseDate,
-									icon: Spicetify.SVGIcons.clock,
+									icon: Spotifier.SVGIcons.clock,
 								}),
 							react.createElement(
 								"div",
@@ -815,7 +815,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 	}
 
 	async function activate() {
-		if (!Spicetify.Player.data) return;
+		if (!Spotifier.Player.data) return;
 
 		await toggleFullscreen();
 
@@ -838,7 +838,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 		window.dispatchEvent(new Event("fad-request"));
 
 		if (lastApp && lastApp !== "/lyrics-plus") {
-			Spicetify.Platform.History.push(lastApp);
+			Spotifier.Platform.History.push(lastApp);
 		}
 	}
 
@@ -858,14 +858,14 @@ body.video-full-screen.video-full-screen--hide-ui {
 	}
 
 	function checkLyricsPlus() {
-		return Spicetify.Config?.custom_apps?.includes("lyrics-plus") || !!document.querySelector("a[href='/lyrics-plus']");
+		return Spotifier.Config?.custom_apps?.includes("lyrics-plus") || !!document.querySelector("a[href='/lyrics-plus']");
 	}
 
 	function requestLyricsPlus() {
 		if (CONFIG.lyricsPlus && checkLyricsPlus()) {
-			lastApp = Spicetify.Platform.History.location.pathname;
+			lastApp = Spotifier.Platform.History.location.pathname;
 			if (lastApp !== "/lyrics-plus") {
-				Spicetify.Platform.History.push("/lyrics-plus");
+				Spotifier.Platform.History.push("/lyrics-plus");
 			}
 		}
 		window.dispatchEvent(new Event("fad-request"));
@@ -873,19 +873,19 @@ body.video-full-screen.video-full-screen--hide-ui {
 
 	function getConfig() {
 		try {
-			const parsed = JSON.parse(Spicetify.LocalStorage.get("full-app-display-config") || "{}");
+			const parsed = JSON.parse(Spotifier.LocalStorage.get("full-app-display-config") || "{}");
 			if (parsed && typeof parsed === "object") {
 				return parsed;
 			}
 			throw "";
 		} catch {
-			Spicetify.LocalStorage.set("full-app-display-config", "{}");
+			Spotifier.LocalStorage.set("full-app-display-config", "{}");
 			return {};
 		}
 	}
 
 	function saveConfig() {
-		Spicetify.LocalStorage.set("full-app-display-config", JSON.stringify(CONFIG));
+		Spotifier.LocalStorage.set("full-app-display-config", JSON.stringify(CONFIG));
 	}
 
 	const ConfigItem = ({ name, field, func, disabled = false }) => {
@@ -911,7 +911,7 @@ body.video-full-screen.video-full-screen--hide-ui {
 						},
 					},
 					react.createElement(DisplayIcon, {
-						icon: Spicetify.SVGIcons.check,
+						icon: Spotifier.SVGIcons.check,
 						size: 16,
 					})
 				)
@@ -1024,18 +1024,18 @@ button.switch[disabled] {
 				func: updateVisual,
 			})
 		);
-		Spicetify.PopupModal.display({
+		Spotifier.PopupModal.display({
 			title: "Full App Display",
 			content: configContainer,
 		});
 	}
 
 	// Add activator on top bar
-	new Spicetify.Topbar.Button(
+	new Spotifier.Topbar.Button(
 		"Full App Display",
-		`<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.projector}</svg>`,
+		`<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spotifier.SVGIcons.projector}</svg>`,
 		activate
 	);
 
-	Spicetify.Mousetrap.bind("f11", toggleFad);
+	Spotifier.Mousetrap.bind("f11", toggleFad);
 })();

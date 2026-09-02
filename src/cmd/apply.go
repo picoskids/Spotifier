@@ -7,19 +7,19 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/spicetify/cli/src/apply"
-	backupstatus "github.com/spicetify/cli/src/status/backup"
-	spotifystatus "github.com/spicetify/cli/src/status/spotify"
-	"github.com/spicetify/cli/src/utils"
+	"github.com/spotifier/cli/src/apply"
+	backupstatus "github.com/spotifier/cli/src/status/backup"
+	spotifystatus "github.com/spotifier/cli/src/status/spotify"
+	"github.com/spotifier/cli/src/utils"
 )
 
 // Apply .
-func Apply(spicetifyVersion string) {
+func Apply(spotifierVersion string) {
 	utils.MigrateConfigFolder()
 
-	backupSpicetifyVersion := backupSection.Key("with").MustString("")
-	if spicetifyVersion != backupSpicetifyVersion {
-		utils.PrintInfo(`Preprocessed Spotify data is outdated. Please run "spicetify restore backup apply" to receive new features and bug fixes`)
+	backupSpotifierVersion := backupSection.Key("with").MustString("")
+	if spotifierVersion != backupSpotifierVersion {
+		utils.PrintInfo(`Preprocessed Spotify data is outdated. Please run "spotifier restore backup apply" to receive new features and bug fixes`)
 		os.Exit(1)
 	}
 
@@ -62,7 +62,7 @@ func Apply(spicetifyVersion string) {
 
 	if preprocSection.Key("expose_apis").MustBool(false) {
 		utils.CopyFile(
-			filepath.Join(utils.GetJsHelperDir(), "spicetifyWrapper.js"),
+			filepath.Join(utils.GetJsHelperDir(), "spotifierWrapper.js"),
 			filepath.Join(appDestPath, "xpui", "helper"))
 	}
 
@@ -74,13 +74,13 @@ func Apply(spicetifyVersion string) {
 		CurrentTheme:         settingSection.Key("current_theme").MustString(""),
 		ColorScheme:          settingSection.Key("color_scheme").MustString(""),
 		InjectThemeJS:        injectJS,
-		CheckSpicetifyUpdate: settingSection.Key("check_spicetify_update").MustBool(false),
+		CheckSpotifierUpdate: settingSection.Key("check_spotifier_update").MustBool(false),
 		Extension:            extensionList,
 		CustomApp:            customAppsList,
 		SidebarConfig:        featureSection.Key("sidebar_config").MustBool(false),
 		HomeConfig:           featureSection.Key("home_config").MustBool(false),
 		ExpFeatures:          featureSection.Key("experimental_features").MustBool(false),
-		SpicetifyVer:         backupSection.Key("with").MustString(""),
+		SpotifierVer:         backupSection.Key("with").MustString(""),
 	})
 	spinner.Success("Applied additional modifications")
 
@@ -113,7 +113,7 @@ func RefreshTheme() {
 	}
 }
 
-type spicetifyConfigJson struct {
+type spotifierConfigJson struct {
 	ThemeName  string                       `json:"theme_name"`
 	SchemeName string                       `json:"scheme_name"`
 	Schemes    map[string]map[string]string `json:"schemes"`
@@ -131,7 +131,7 @@ func refreshThemeCSS() {
 	}
 	apply.UserCSS(appDestPath, theme, scheme)
 
-	var configJson spicetifyConfigJson
+	var configJson spotifierConfigJson
 	configJson.ThemeName = settingSection.Key("current_theme").MustString("")
 	configJson.SchemeName = settingSection.Key("color_scheme").MustString("")
 
@@ -154,7 +154,7 @@ func refreshThemeCSS() {
 		utils.PrintError("Cannot convert colors.ini to JSON")
 	} else {
 		if err := os.WriteFile(
-			filepath.Join(appDestPath, "xpui", "spicetify-config.json"),
+			filepath.Join(appDestPath, "xpui", "spotifier-config.json"),
 			configJsonBytes, 0700); err != nil {
 			spinner.Fail("Failed to update theme's styles")
 			utils.PrintError(err.Error())
@@ -194,9 +194,9 @@ func CheckStates() {
 
 	if backStat.IsEmpty() {
 		if spotStat.IsBackupable() {
-			utils.PrintError(`You haven't backed up. Run "spicetify backup apply"`)
+			utils.PrintError(`You haven't backed up. Run "spotifier backup apply"`)
 		} else {
-			utils.PrintError(`You haven't backed up and Spotify cannot be backed up at this state. Please re-install Spotify then run "spicetify backup apply"`)
+			utils.PrintError(`You haven't backed up and Spotify cannot be backed up at this state. Please re-install Spotify then run "spotifier backup apply"`)
 		}
 		os.Exit(1)
 
@@ -205,12 +205,12 @@ func CheckStates() {
 
 		if spotStat.IsMixed() {
 			utils.PrintInfo(`Spotify client possibly just had a new update`)
-			utils.PrintInfo(`Please run "spicetify backup apply"`)
+			utils.PrintInfo(`Please run "spotifier backup apply"`)
 		} else if spotStat.IsStock() {
 			utils.PrintInfo(`Spotify client is in stock state`)
-			utils.PrintInfo(`Please run "spicetify backup apply"`)
+			utils.PrintInfo(`Please run "spotifier backup apply"`)
 		} else {
-			utils.PrintInfo(`Spotify cannot be backed up at this state. Please re-install Spotify then run "spicetify backup apply"`)
+			utils.PrintInfo(`Spotify cannot be backed up at this state. Please re-install Spotify then run "spotifier backup apply"`)
 		}
 
 		os.Exit(1)
@@ -266,7 +266,7 @@ func pushExtensions(destExt string, list ...string) {
 				lines := strings.Split(content, "\n")
 				for i := 0; i < len(lines); i++ {
 					mapping := utils.FindSymbol("", lines[i], []string{
-						`//\s*spicetify_map\{(.+?)\}\{(.+?)\}`,
+						`//\s*spotifier_map\{(.+?)\}\{(.+?)\}`,
 					})
 					if len(mapping) > 0 {
 						lines[i+1] = strings.Replace(lines[i+1], mapping[0], mapping[1], 1)
@@ -286,7 +286,7 @@ func RefreshApps(list ...string) {
 	}
 
 	for _, app := range list {
-		appName := `spicetify-routes-` + app
+		appName := `spotifier-routes-` + app
 
 		customAppPath, err := utils.GetCustomAppPath(app)
 		if err != nil {

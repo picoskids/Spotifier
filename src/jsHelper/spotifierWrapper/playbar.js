@@ -1,6 +1,6 @@
 import { waitFor } from "./shared/async.js";
 
-Spicetify.Playbar = (() => {
+Spotifier.Playbar = (() => {
   let rightContainer;
   const buttonsStash = new Set();
 
@@ -16,9 +16,9 @@ Spicetify.Playbar = (() => {
       this.disabled = disabled;
       this.active = active;
       void addClassname(this.element);
-      this.tippy = Spicetify.Tippy?.(this.element, {
+      this.tippy = Spotifier.Tippy?.(this.element, {
         content: label,
-        ...Spicetify.TippyProps,
+        ...Spotifier.TippyProps,
       });
       this.label = label;
       if (registerOnCreate) this.register();
@@ -36,8 +36,8 @@ Spicetify.Playbar = (() => {
     }
     set icon(input) {
       let newInput = input;
-      if (newInput && Spicetify.SVGIcons[newInput]) {
-        newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" stroke="currentColor">${Spicetify.SVGIcons[newInput]}</svg>`;
+      if (newInput && Spotifier.SVGIcons[newInput]) {
+        newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" stroke="currentColor">${Spotifier.SVGIcons[newInput]}</svg>`;
       }
       this._icon = newInput;
       this.iconElement.innerHTML = newInput;
@@ -101,9 +101,9 @@ Spicetify.Playbar = (() => {
       this.onClick = onClick;
       this.disabled = disabled;
       this.active = active;
-      this.tippy = Spicetify.Tippy?.(this.element, {
+      this.tippy = Spotifier.Tippy?.(this.element, {
         content: label,
-        ...Spicetify.TippyProps,
+        ...Spotifier.TippyProps,
       });
       this.label = label;
       if (registerOnCreate) this.register();
@@ -121,8 +121,8 @@ Spicetify.Playbar = (() => {
     }
     set icon(input) {
       let newInput = input;
-      if (newInput && Spicetify.SVGIcons[newInput]) {
-        newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons[newInput]}</svg>`;
+      if (newInput && Spotifier.SVGIcons[newInput]) {
+        newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spotifier.SVGIcons[newInput]}</svg>`;
       }
       this._icon = newInput;
       this.element.innerHTML = newInput;

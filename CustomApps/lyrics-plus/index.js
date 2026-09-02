@@ -3,10 +3,10 @@
 /// <reference path="../../globals.d.ts" />
 
 /** @type {React} */
-const react = Spicetify.React;
+const react = Spotifier.React;
 const { useState, useEffect, useCallback, useMemo, useRef } = react;
 /** @type {import("react").ReactDOM} */
-const spotifyVersion = Spicetify.Platform.version;
+const spotifyVersion = Spotifier.Platform.version;
 
 // Define a function called "render" to specify app entry point
 // This function will be used to mount app to main view.
@@ -272,12 +272,12 @@ class LyricsContainer extends react.Component {
 		let vibrant = 0;
 		try {
 			try {
-				const { fetchExtractedColorForTrackEntity } = Spicetify.GraphQL.Definitions;
-				const { data } = await Spicetify.GraphQL.Request(fetchExtractedColorForTrackEntity, { uri });
+				const { fetchExtractedColorForTrackEntity } = Spotifier.GraphQL.Definitions;
+				const { data } = await Spotifier.GraphQL.Request(fetchExtractedColorForTrackEntity, { uri });
 				const { hex } = data.trackUnion.albumOfTrack.coverArt.extractedColors.colorDark;
 				vibrant = Number.parseInt(hex.replace("#", ""), 16);
 			} catch {
-				const colors = await Spicetify.CosmosAsync.get(`https://spclient.wg.spotify.com/colorextractor/v1/extract-presets?uri=${uri}&format=json`);
+				const colors = await Spotifier.CosmosAsync.get(`https://spclient.wg.spotify.com/colorextractor/v1/extract-presets?uri=${uri}&format=json`);
 				vibrant = colors.entries[0].color_swatches.find((color) => color.preset === "VIBRANT_NON_ALARMING").color;
 			}
 		} catch {
@@ -293,7 +293,7 @@ class LyricsContainer extends react.Component {
 	}
 
 	async fetchTempo(uri) {
-		const audio = await Spicetify.CosmosAsync.get(
+		const audio = await Spotifier.CosmosAsync.get(
 			`https://spclient.wg.spotify.com/audio-attributes/v1/audio-features/${uri.split(":")[2]}?format=json`
 		);
 		let tempo = audio.tempo;
@@ -360,7 +360,7 @@ class LyricsContainer extends react.Component {
 
 		const currentLanguage = selectedLanguage;
 
-		Spicetify.showNotification(MUSIXMATCH_TRANSLATION_FETCH_MESSAGE, false, 1000);
+		Spotifier.showNotification(MUSIXMATCH_TRANSLATION_FETCH_MESSAGE, false, 1000);
 
 		this.setState({
 			musixmatchTranslation: null,
@@ -373,7 +373,7 @@ class LyricsContainer extends react.Component {
 		} catch (error) {
 			console.error(error);
 			if (isLatestRequest()) {
-				Spicetify.showNotification(MUSIXMATCH_TRANSLATION_FETCH_FAILED_MESSAGE, true, 3000);
+				Spotifier.showNotification(MUSIXMATCH_TRANSLATION_FETCH_FAILED_MESSAGE, true, 3000);
 				if (CACHE[currentUri]) {
 					CACHE[currentUri].musixmatchTranslation = null;
 					CACHE[currentUri].musixmatchTranslationLanguage = null;
@@ -385,7 +385,7 @@ class LyricsContainer extends react.Component {
 
 		if (!translation) {
 			if (isLatestRequest()) {
-				Spicetify.showNotification(MUSIXMATCH_TRANSLATION_FETCH_FAILED_MESSAGE, true, 3000);
+				Spotifier.showNotification(MUSIXMATCH_TRANSLATION_FETCH_FAILED_MESSAGE, true, 3000);
 				if (CACHE[currentUri]) {
 					CACHE[currentUri].musixmatchTranslation = null;
 					CACHE[currentUri].musixmatchTranslationLanguage = null;
@@ -741,7 +741,7 @@ class LyricsContainer extends react.Component {
 	async translateLyrics(language, lyrics, targetConvert) {
 		if (!language) return;
 
-		Spicetify.showNotification("Converting...", false, 1000);
+		Spotifier.showNotification("Converting...", false, 1000);
 		if (!this.translator) {
 			this.translator = new Translator(language);
 		}
@@ -774,7 +774,7 @@ class LyricsContainer extends react.Component {
 
 				// prevent conversion between the same language.
 				if (targetConvert === "cn") {
-					Spicetify.showNotification("No conversion is needed", false, 1000);
+					Spotifier.showNotification("No conversion is needed", false, 1000);
 					return lyrics;
 				}
 
@@ -791,7 +791,7 @@ class LyricsContainer extends react.Component {
 
 				// prevent conversion between the same language.
 				if (targetConvert === "tw") {
-					Spicetify.showNotification("No conversion is needed", false, 1000);
+					Spotifier.showNotification("No conversion is needed", false, 1000);
 					return lyrics;
 				}
 
@@ -801,10 +801,10 @@ class LyricsContainer extends react.Component {
 			}
 
 			const res = Utils.processTranslatedLyrics(result, lyrics);
-			Spicetify.showNotification("Converting...", false, 0);
+			Spotifier.showNotification("Converting...", false, 0);
 			return res;
 		} catch (error) {
-			Spicetify.showNotification("Convert Error!", true);
+			Spotifier.showNotification("Convert Error!", true);
 			console.error(error);
 		}
 	}
@@ -812,7 +812,7 @@ class LyricsContainer extends react.Component {
 	async romanizeLyrics(lyrics) {
 		if (!lyrics) return null;
 
-		Spicetify.showNotification("Converting...", false, 1000);
+		Spotifier.showNotification("Converting...", false, 1000);
 		if (!this.translator) {
 			this.translator = new Translator("zh");
 		}
@@ -825,17 +825,17 @@ class LyricsContainer extends react.Component {
 					text: await this.translator.convertToPinyin(lyric.text),
 				}))
 			);
-			Spicetify.showNotification("Converting...", false, 0);
+			Spotifier.showNotification("Converting...", false, 0);
 			return result;
 		} catch (error) {
-			Spicetify.showNotification("Convert Error!", true);
+			Spotifier.showNotification("Convert Error!", true);
 			console.error(error);
 			return null;
 		}
 	}
 
 	resetDelay() {
-		CONFIG.visual.delay = Number(localStorage.getItem(`lyrics-delay:${Spicetify.Player.data.item.uri}`)) || 0;
+		CONFIG.visual.delay = Number(localStorage.getItem(`lyrics-delay:${Spotifier.Player.data.item.uri}`)) || 0;
 	}
 
 	async onVersionChange(items, index) {
@@ -905,7 +905,7 @@ class LyricsContainer extends react.Component {
 		const reader = new FileReader();
 
 		if (file[0].size > 1024 * 1024) {
-			Spicetify.showNotification("File too large", true);
+			Spotifier.showNotification("File too large", true);
 			return;
 		}
 
@@ -918,7 +918,7 @@ class LyricsContainer extends react.Component {
 					.map((key) => `<strong>${key}</strong>`);
 
 				if (!parsedKeys.length) {
-					Spicetify.showNotification("Nothing to load", true);
+					Spotifier.showNotification("Nothing to load", true);
 					return;
 				}
 
@@ -926,24 +926,24 @@ class LyricsContainer extends react.Component {
 				CACHE[this.currentTrackUri] = { ...localLyrics, provider: "local", uri: this.currentTrackUri };
 				this.saveLocalLyrics(this.currentTrackUri, localLyrics);
 
-				Spicetify.showNotification(`Loaded ${parsedKeys.join(", ")} lyrics from file`);
+				Spotifier.showNotification(`Loaded ${parsedKeys.join(", ")} lyrics from file`);
 			} catch (e) {
 				console.error(e);
-				Spicetify.showNotification("Failed to load lyrics", true);
+				Spotifier.showNotification("Failed to load lyrics", true);
 			}
 		};
 
 		reader.onerror = (e) => {
 			console.error(e);
-			Spicetify.showNotification("Failed to read file", true);
+			Spotifier.showNotification("Failed to read file", true);
 		};
 
 		reader.readAsText(file[0]);
 		event.target.value = "";
 	}
 	initMoustrap() {
-		if (!this.mousetrap && Spicetify.Mousetrap) {
-			this.mousetrap = new Spicetify.Mousetrap();
+		if (!this.mousetrap && Spotifier.Mousetrap) {
+			this.mousetrap = new Spotifier.Mousetrap();
 		}
 	}
 
@@ -968,10 +968,10 @@ class LyricsContainer extends react.Component {
 			});
 		};
 
-		if (Spicetify.Player?.data?.item) {
+		if (Spotifier.Player?.data?.item) {
 			this.state.explicitMode = this.state.lockMode;
-			this.currentTrackUri = Spicetify.Player.data.item.uri;
-			this.fetchLyrics(Spicetify.Player.data.item, this.state.explicitMode);
+			this.currentTrackUri = Spotifier.Player.data.item.uri;
+			this.fetchLyrics(Spotifier.Player.data.item, this.state.explicitMode);
 		}
 
 		this.updateVisualOnConfigChange();
@@ -994,13 +994,13 @@ class LyricsContainer extends react.Component {
 			CACHE = {};
 			this.updateVisualOnConfigChange();
 			this.forceUpdate();
-			this.fetchLyrics(Spicetify.Player.data.item, this.state.explicitMode, true);
+			this.fetchLyrics(Spotifier.Player.data.item, this.state.explicitMode, true);
 		};
 
 		this.viewPort =
 			document.querySelector(".Root__main-view .os-viewport") ?? document.querySelector(".Root__main-view .main-view-container__scroll-node");
 
-		this.configButton = new Spicetify.Menu.Item("Lyrics Plus config", false, openConfig, "lyrics");
+		this.configButton = new Spotifier.Menu.Item("Lyrics Plus config", false, openConfig, "lyrics");
 		this.configButton.register();
 
 		this.onFontSizeChange = (event) => {
@@ -1225,7 +1225,7 @@ class LyricsContainer extends react.Component {
 					}),
 				react.createElement(AdjustmentsMenu, { mode, hasPerformer }),
 				react.createElement(
-					Spicetify.ReactComponent.TooltipWrapper,
+					Spotifier.ReactComponent.TooltipWrapper,
 					{
 						label: this.state.isCached ? "Lyrics cached" : "Cache lyrics",
 					},
@@ -1236,16 +1236,16 @@ class LyricsContainer extends react.Component {
 							onClick: () => {
 								const { synced, unsynced, karaoke, genius } = this.state;
 								if (!synced && !unsynced && !karaoke && !genius) {
-									Spicetify.showNotification("No lyrics to cache", true);
+									Spotifier.showNotification("No lyrics to cache", true);
 									return;
 								}
 
 								if (this.state.isCached) {
 									this.deleteLocalLyrics(this.currentTrackUri);
-									Spicetify.showNotification("Delete lyrics cache");
+									Spotifier.showNotification("Delete lyrics cache");
 								} else {
 									this.saveLocalLyrics(this.currentTrackUri, { synced, unsynced, karaoke, genius });
-									Spicetify.showNotification("Lyrics cached");
+									Spotifier.showNotification("Lyrics cached");
 								}
 							},
 						},
@@ -1255,13 +1255,13 @@ class LyricsContainer extends react.Component {
 							viewBox: "0 0 16 16",
 							fill: "currentColor",
 							dangerouslySetInnerHTML: {
-								__html: Spicetify.SVGIcons[this.state.isCached ? "downloaded" : "download"],
+								__html: Spotifier.SVGIcons[this.state.isCached ? "downloaded" : "download"],
 							},
 						})
 					)
 				),
 				react.createElement(
-					Spicetify.ReactComponent.TooltipWrapper,
+					Spotifier.ReactComponent.TooltipWrapper,
 					{
 						label: "Load lyrics from file",
 					},
@@ -1288,7 +1288,7 @@ class LyricsContainer extends react.Component {
 							viewBox: "0 0 16 16",
 							fill: "currentColor",
 							dangerouslySetInnerHTML: {
-								__html: Spicetify.SVGIcons["plus-alt"],
+								__html: Spotifier.SVGIcons["plus-alt"],
 							},
 						})
 					)
@@ -1304,13 +1304,13 @@ class LyricsContainer extends react.Component {
 						const mode = CONFIG.modes.findIndex((a) => a === label);
 						if (mode !== this.state.mode) {
 							// If explicitMode is not set, moving the topBar will apply the default mode value for the selected song.
-							const info = this.infoFromTrack(Spicetify.Player.data.item);
+							const info = this.infoFromTrack(Spotifier.Player.data.item);
 							if (info?.uri && CACHE[info?.uri]) {
 								CACHE[info.uri].mode = mode;
 							}
 
 							this.setState({ explicitMode: mode });
-							this.state.provider !== "local" && this.fetchLyrics(Spicetify.Player.data.item, mode);
+							this.state.provider !== "local" && this.fetchLyrics(Spotifier.Player.data.item, mode);
 						}
 					},
 					lockCallback: (label) => {
@@ -1319,15 +1319,15 @@ class LyricsContainer extends react.Component {
 							mode = -1;
 						}
 						this.setState({ explicitMode: mode, lockMode: mode });
-						this.fetchLyrics(Spicetify.Player.data.item, mode);
+						this.fetchLyrics(Spotifier.Player.data.item, mode);
 						CONFIG.locked = mode;
 						localStorage.setItem("lyrics-plus:lock-mode", mode);
 					},
 				})
 		);
 
-		if (this.state.isFullscreen) return Spicetify.ReactDOM.createPortal(out, this.fullscreenContainer);
-		if (fadLyricsContainer) return Spicetify.ReactDOM.createPortal(out, fadLyricsContainer);
+		if (this.state.isFullscreen) return Spotifier.ReactDOM.createPortal(out, this.fullscreenContainer);
+		if (fadLyricsContainer) return Spotifier.ReactDOM.createPortal(out, fadLyricsContainer);
 		return out;
 	}
 }

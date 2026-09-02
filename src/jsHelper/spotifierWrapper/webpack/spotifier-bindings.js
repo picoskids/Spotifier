@@ -2,7 +2,7 @@ import { fnStr } from "../shared/string.js";
 import { createReactComponents } from "./react-components.js";
 import { findReactQuery } from "./react-query.js";
 
-export function createSpicetifyBindings({
+export function createSpotifierBindings({
   cache,
   chunks,
   modules,
@@ -24,15 +24,15 @@ export function createSpicetifyBindings({
       .find((module) => typeof module === "function"),
     Color: functionModules.find((m) => fnStr(m).includes("static fromHex") || fnStr(m).includes("this.rgb")),
     Player: {
-      ...Spicetify.Player,
+      ...Spotifier.Player,
       get origin() {
-        return Spicetify.Platform?.PlayerAPI;
+        return Spotifier.Platform?.PlayerAPI;
       },
     },
     GraphQL: {
-      ...Spicetify.GraphQL,
+      ...Spotifier.GraphQL,
       get Request() {
-        return Spicetify.Platform?.GraphQLLoader || Spicetify.GraphQL.Handler?.(Spicetify.GraphQL.Context);
+        return Spotifier.Platform?.GraphQLLoader || Spotifier.GraphQL.Handler?.(Spotifier.GraphQL.Context);
       },
       Context: functionModules.find((m) => fnStr(m).includes("subscription") && fnStr(m).includes("mutation")),
       Handler: functionModules.find((m) => fnStr(m).includes("GraphQL subscriptions are not supported")),
@@ -55,7 +55,7 @@ export function createSpicetifyBindings({
     },
     ReactQuery: findReactQuery({ cache, modules, functionModules }),
     ReactFlipToolkit: {
-      ...Spicetify.ReactFlipToolkit,
+      ...Spotifier.ReactFlipToolkit,
       Flipper: functionModules.find((m) => m?.prototype?.getSnapshotBeforeUpdate),
       Flipped: functionModules.find((m) => m.displayName === "Flipped"),
     },

@@ -1,6 +1,6 @@
 import { waitFor } from "./shared/async.js";
 
-Spicetify.Topbar = (() => {
+Spotifier.Topbar = (() => {
   let leftGeneratedClassName;
   let rightGeneratedClassName;
   let leftContainer;
@@ -15,9 +15,9 @@ Spicetify.Topbar = (() => {
       this.icon = icon;
       this.onClick = onClick;
       this.disabled = disabled;
-      this.tippy = Spicetify.Tippy?.(this.element, {
+      this.tippy = Spotifier.Tippy?.(this.element, {
         content: label,
-        ...Spicetify.TippyProps,
+        ...Spotifier.TippyProps,
       });
       this.label = label;
 
@@ -46,8 +46,8 @@ Spicetify.Topbar = (() => {
     }
     set icon(input) {
       let newInput = input;
-      if (newInput && Spicetify.SVGIcons[newInput]) {
-        newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons[newInput]}</svg>`;
+      if (newInput && Spotifier.SVGIcons[newInput]) {
+        newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spotifier.SVGIcons[newInput]}</svg>`;
       }
       this._icon = newInput;
       this.button.innerHTML = newInput;
@@ -110,7 +110,7 @@ Spicetify.Topbar = (() => {
 
   void waitForTopbarMounted();
   void (async function waitForPlatform() {
-    const history = await waitFor(() => Spicetify.Platform?.History, 100);
+    const history = await waitFor(() => Spotifier.Platform?.History, 100);
     history.listen(() => waitForTopbarMounted());
   })();
 

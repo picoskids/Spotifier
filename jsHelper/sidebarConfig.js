@@ -56,11 +56,11 @@
 	function writeStorage() {
 		const array = ordered.map((a) => [a[0].dataset.id, a[1]]);
 
-		return localStorage.setItem("spicetify-sidebar-config:ylx", JSON.stringify(array));
+		return localStorage.setItem("spotifier-sidebar-config:ylx", JSON.stringify(array));
 	}
 
 	const container = document.createElement("div");
-	container.id = "spicetify-sidebar-config";
+	container.id = "spotifier-sidebar-config";
 	const up = document.createElement("button");
 	up.innerText = "Up";
 	const down = document.createElement("button");
@@ -69,10 +69,10 @@
 	const stick = document.createElement("button");
 	const style = document.createElement("style");
 	style.innerHTML = `
-#spicetify-hidden-list {
+#spotifier-hidden-list {
 background-color: rgba(var(--spice-rgb-main), .3);
 }
-#spicetify-sidebar-config {
+#spotifier-sidebar-config {
 position: relative;
 width: 100%;
 height: 0;
@@ -82,14 +82,14 @@ align-items: center;
 top: -20px;
 left: 0;
 }
-#spicetify-sidebar-config button {
+#spotifier-sidebar-config button {
 min-width: 60px;
 border-radius: 3px;
 background-color: var(--spice-main);
 color: var(--spice-text);
 border: 1px solid var(--spice-text);
 }
-#spicetify-sidebar-config button:disabled {
+#spotifier-sidebar-config button:disabled {
 color: var(--spice-button-disabled);
 }
 `;
@@ -113,7 +113,7 @@ color: var(--spice-button-disabled);
 			appendItems();
 		}
 
-		YLXSidebarState = Spicetify.Platform.LocalStorageAPI.getItem("ylx-sidebar-state");
+		YLXSidebarState = Spotifier.Platform.LocalStorageAPI.getItem("ylx-sidebar-state");
 		if (YLXSidebarState === 1) document.querySelector(".main-yourLibraryX-collapseButton > button")?.click();
 
 		document.documentElement.style.setProperty("--nav-bar-width", "280px");
@@ -156,7 +156,7 @@ color: var(--spice-button-disabled);
 		else
 			document.documentElement.style.setProperty(
 				"--nav-bar-width",
-				`${Spicetify.Platform.LocalStorageAPI.getItem(
+				`${Spotifier.Platform.LocalStorageAPI.getItem(
 					YLXSidebarState === 2 ? "ylx-expanded-state-nav-bar-width" : "ylx-default-state-nav-bar-width"
 				)}px`
 			);
@@ -164,28 +164,28 @@ color: var(--spice-button-disabled);
 	}
 
 	(async () => {
-		await new Promise((res) => Spicetify.Events.webpackLoaded.on(res));
+		await new Promise((res) => Spotifier.Events.webpackLoaded.on(res));
 
-		while (!Spicetify.Snackbar?.enqueueCustomSnackbar) {
+		while (!Spotifier.Snackbar?.enqueueCustomSnackbar) {
 			await new Promise((resolve) => setTimeout(resolve, 10));
 		}
 
 		if (document.querySelector(".Root__globalNav")) {
-			const content = Spicetify.React.createElement("div", {
+			const content = Spotifier.React.createElement("div", {
 				dangerouslySetInnerHTML: {
 					__html:
-						"Sidebar config is not supported when Global Navbar is enabled.<br>In your terminal, please run <code>spicetify config sidebar_config 0</code> command and then re-apply spicetify with <code>spicetify apply</code>.",
+						"Sidebar config is not supported when Global Navbar is enabled.<br>In your terminal, please run <code>spotifier config sidebar_config 0</code> command and then re-apply spotifier with <code>spotifier apply</code>.",
 				},
 				style: {
 					"text-size": "12px",
 				},
 			});
 
-			Spicetify.Snackbar?.enqueueCustomSnackbar("sidebar-config", {
+			Spotifier.Snackbar?.enqueueCustomSnackbar("sidebar-config", {
 				keyPrefix: "sidebar-config",
 				autoHideDuration: 7500,
-				children: Spicetify.ReactComponent.Snackbar.wrapper({
-					children: Spicetify.React.createElement(Spicetify.ReactComponent.Snackbar.simpleLayout, {
+				children: Spotifier.ReactComponent.Snackbar.wrapper({
+					children: Spotifier.React.createElement(Spotifier.ReactComponent.Snackbar.simpleLayout, {
 						center: content,
 						children: content,
 						dragMetadata: {},
@@ -196,7 +196,7 @@ color: var(--spice-button-disabled);
 		}
 
 		if (!isGlobalNavbar) {
-			new Spicetify.Menu.Item(
+			new Spotifier.Menu.Item(
 				"Sidebar config",
 				false,
 				(self) => {
@@ -237,16 +237,16 @@ color: var(--spice-button-disabled);
 		buttons = [];
 		ordered = [];
 
-		appItems.id = "spicetify-sticky-list";
+		appItems.id = "spotifier-sticky-list";
 		// SHOW container
 		list = document.createElement("ul");
-		list.id = "spicetify-show-list";
+		list.id = "spotifier-show-list";
 		// HIDDEN container
 		hiddenList = document.createElement("ul");
-		hiddenList.id = "spicetify-hidden-list";
+		hiddenList.id = "spotifier-hidden-list";
 		hiddenList.classList.add("hidden-visually");
 		const playlistList = libraryItems.querySelector("ul");
-		playlistList.id = "spicetify-playlist-list";
+		playlistList.id = "spotifier-playlist-list";
 		libraryItems.prepend(list, hiddenList);
 
 		for (const ele of appItems.children) {
@@ -256,7 +256,7 @@ color: var(--spice-button-disabled);
 
 		let storage = [];
 		try {
-			storage = JSON.parse(localStorage.getItem("spicetify-sidebar-config:ylx"));
+			storage = JSON.parse(localStorage.getItem("spotifier-sidebar-config:ylx"));
 			if (!Array.isArray(storage)) throw "";
 		} catch {
 			storage = buttons.map((el) => [el.dataset.id, STICKY]);
@@ -265,7 +265,7 @@ color: var(--spice-button-disabled);
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				if (mutation.type === "childList" && mutation.addedNodes.length) {
-					mutation.addedNodes[0].id = "spicetify-playlist-list";
+					mutation.addedNodes[0].id = "spotifier-playlist-list";
 				}
 			}
 		});
@@ -293,11 +293,11 @@ background: var(--spice-card);
 .main-rootlist-rootlist {
 margin-top: 0;
 }
-.Root__nav-bar :not(.main-yourLibraryX-entryPoints) > #spicetify-show-list >* {
+.Root__nav-bar :not(.main-yourLibraryX-entryPoints) > #spotifier-show-list >* {
 padding: 0 24px 0 8px;
 }
-.main-yourLibraryX-entryPoints #spicetify-show-list,
-.main-yourLibraryX-entryPoints #spicetify-hidden-list {
+.main-yourLibraryX-entryPoints #spotifier-show-list,
+.main-yourLibraryX-entryPoints #spotifier-hidden-list {
 padding: 0 12px;
 }
 `;

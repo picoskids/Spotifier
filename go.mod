@@ -1,4 +1,4 @@
-module github.com/spicetify/cli
+module github.com/spotifier/cli
 
 go 1.25.0
 

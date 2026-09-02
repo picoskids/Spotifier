@@ -7,7 +7,7 @@
 	let isFallback = false;
 
 	try {
-		overrideList = JSON.parse(localStorage.getItem("spicetify-exp-features"));
+		overrideList = JSON.parse(localStorage.getItem("spotifier-exp-features"));
 		if (!overrideList || overrideList !== Object(overrideList)) throw "";
 		prevSessionOverrideList = Object.keys(overrideList);
 	} catch {
@@ -15,7 +15,7 @@
 		prevSessionOverrideList = [];
 	}
 
-	Spicetify.expFeatureOverride = (feature) => {
+	Spotifier.expFeatureOverride = (feature) => {
 		hooksPatched = true;
 		newFeatures.push(feature.name);
 
@@ -38,40 +38,40 @@
 				break;
 		}
 
-		localStorage.setItem("spicetify-exp-features", JSON.stringify(overrideList));
+		localStorage.setItem("spotifier-exp-features", JSON.stringify(overrideList));
 		return feature;
 	};
 
 	const content = document.createElement("div");
-	content.classList.add("spicetify-exp-features");
+	content.classList.add("spotifier-exp-features");
 	const style = document.createElement("style");
 	style.innerHTML = `
-.spicetify-exp-features .col {
+.spotifier-exp-features .col {
     padding: 0;
 }
-.spicetify-exp-features .setting-row::after {
+.spotifier-exp-features .setting-row::after {
     content: "";
     display: table;
     clear: both;
 }
-.spicetify-exp-features .setting-row {
+.spotifier-exp-features .setting-row {
     display: flex;
     padding: 10px 0;
     align-items: center;
 }
-.spicetify-exp-features .setting-row .col.description {
+.spotifier-exp-features .setting-row .col.description {
     float: left;
     padding-right: 15px;
     width: 100%;
 }
-.spicetify-exp-features .setting-row .col.action {
+.spotifier-exp-features .setting-row .col.action {
     float: right;
     text-align: right;
 }
-.spicetify-exp-features .setting-row .col.action .dropdown {
+.spotifier-exp-features .setting-row .col.action .dropdown {
 	width: max-content;
 }
-.spicetify-exp-features button.switch {
+.spotifier-exp-features button.switch {
     align-items: center;
     border: 0px;
     border-radius: 50%;
@@ -82,11 +82,11 @@
     margin-inline-start: 12px;
     padding: 8px;
 }
-.spicetify-exp-features button.switch.disabled,
-.spicetify-exp-features button.switch[disabled] {
+.spotifier-exp-features button.switch.disabled,
+.spotifier-exp-features button.switch[disabled] {
     color: rgba(var(--spice-rgb-text), .3);
 }
-.spicetify-exp-features button.reset {
+.spotifier-exp-features button.reset {
 	font-weight: 700;
 	font-size: medium;
 	background-color: transparent;
@@ -99,22 +99,22 @@
 	min-block-size: 32px;
 	cursor: pointer;
 }
-.spicetify-exp-features button.reset:hover {
+.spotifier-exp-features button.reset:hover {
 	transform: scale(1.04);
 	border-color: var(--spice-text);
 }
-.spicetify-exp-features .search-container {
+.spotifier-exp-features .search-container {
     width: 100%;
 }
-.spicetify-exp-features .setting-row#search .col.action {
+.spotifier-exp-features .setting-row#search .col.action {
     position: relative;
     width: 100%;
 }
-.spicetify-exp-features .setting-row#search svg {
+.spotifier-exp-features .setting-row#search svg {
     position: absolute;
     margin: 12px;
 }
-.spicetify-exp-features input.search {
+.spotifier-exp-features input.search {
     border-style: solid;
     border-color: var(--spice-sidebar);
     background-color: var(--spice-sidebar);
@@ -132,14 +132,14 @@
 
 	(function waitForRemoteConfigResolver() {
 		// Don't show options if hooks aren't patched/loaded
-		if (!hooksPatched || (!Spicetify.RemoteConfigResolver && !Spicetify.Platform?.RemoteConfigDebugAPI && !Spicetify.Platform?.RemoteConfiguration)) {
+		if (!hooksPatched || (!Spotifier.RemoteConfigResolver && !Spotifier.Platform?.RemoteConfigDebugAPI && !Spotifier.Platform?.RemoteConfiguration)) {
 			setTimeout(waitForRemoteConfigResolver, 500);
 			return;
 		}
 
-		let remoteConfiguration = Spicetify.RemoteConfigResolver?.value.remoteConfiguration || Spicetify.Platform?.RemoteConfiguration;
+		let remoteConfiguration = Spotifier.RemoteConfigResolver?.value.remoteConfiguration || Spotifier.Platform?.RemoteConfiguration;
 		const setOverrides = async (overrides) => {
-			const remoteConfigDebugAPI = Spicetify.Platform?.RemoteConfigDebugAPI;
+			const remoteConfigDebugAPI = Spotifier.Platform?.RemoteConfigDebugAPI;
 
 			if (remoteConfigDebugAPI?.getProperties && (remoteConfigDebugAPI.setOverrides || remoteConfigDebugAPI.setOverride)) {
 				const properties = await remoteConfigDebugAPI.getProperties();
@@ -169,13 +169,13 @@
 					const type = feature?.values ? "enum" : typeof value === "number" ? "number" : "boolean";
 					await remoteConfigDebugAPI.setOverride({ source: "web", type, name }, value);
 				}
-			} else if (Spicetify.RemoteConfigResolver?.value?.setOverrides) {
-				Spicetify.RemoteConfigResolver.value.setOverrides(Spicetify.createInternalMap?.(overrides));
+			} else if (Spotifier.RemoteConfigResolver?.value?.setOverrides) {
+				Spotifier.RemoteConfigResolver.value.setOverrides(Spotifier.createInternalMap?.(overrides));
 			}
 		};
 
 		(async function waitForResolver() {
-			if (!Spicetify.RemoteConfigResolver && !Spicetify.Platform?.RemoteConfigDebugAPI) {
+			if (!Spotifier.RemoteConfigResolver && !Spotifier.Platform?.RemoteConfigDebugAPI) {
 				isFallback = true;
 				notice.innerText = "⚠️ Using fallback mode. Some features may not work.";
 				setTimeout(waitForResolver, 500);
@@ -184,19 +184,19 @@
 			isFallback = false;
 			notice.remove();
 			remoteConfiguration =
-				Spicetify?.RemoteConfigResolver?.value.remoteConfiguration ?? (await Spicetify.Platform?.RemoteConfigDebugAPI.getProperties());
+				Spotifier?.RemoteConfigResolver?.value.remoteConfiguration ?? (await Spotifier.Platform?.RemoteConfigDebugAPI.getProperties());
 		})();
 
 		for (const key of Object.keys(overrideList)) {
 			if (newFeatures.includes(key)) continue;
 			delete overrideList[key];
-			console.warn(`[spicetify-exp-features] Removed ${key} from override list`);
-			localStorage.setItem("spicetify-exp-features", JSON.stringify(overrideList));
+			console.warn(`[spotifier-exp-features] Removed ${key} from override list`);
+			localStorage.setItem("spotifier-exp-features", JSON.stringify(overrideList));
 		}
 
 		function changeValue(name, value) {
 			overrideList[name].value = value;
-			localStorage.setItem("spicetify-exp-features", JSON.stringify(overrideList));
+			localStorage.setItem("spotifier-exp-features", JSON.stringify(overrideList));
 
 			featureMap[name] = value;
 			setOverrides({ [name]: value });
@@ -210,7 +210,7 @@
 <label class="col description">${desc}</label>
 <div class="col action"><button class="switch">
     <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-        ${Spicetify.SVGIcons.check}
+        ${Spotifier.SVGIcons.check}
     </svg>
 </button></div>`;
 
@@ -254,7 +254,7 @@
 <div class="col action">
 <div class="search-container">
 <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-${Spicetify.SVGIcons.search}
+${Spotifier.SVGIcons.search}
 </svg>
 <input type="text" class="search" placeholder="Search for a feature">
 </div>
@@ -280,7 +280,7 @@ ${Spicetify.SVGIcons.search}
 					</div>`;
 		const resetBtn = resetButton.querySelector("button.reset");
 		resetBtn.onclick = () => {
-			localStorage.removeItem("spicetify-exp-features");
+			localStorage.removeItem("spotifier-exp-features");
 			window.location.reload();
 		};
 
@@ -290,7 +290,7 @@ ${Spicetify.SVGIcons.search}
 			if (!prevSessionOverrideList.includes(name) && remoteConfiguration.values.has(name)) {
 				const currentValue = remoteConfiguration.values.get(name);
 				overrideList[name].value = currentValue;
-				localStorage.setItem("spicetify-exp-features", JSON.stringify(overrideList));
+				localStorage.setItem("spotifier-exp-features", JSON.stringify(overrideList));
 
 				featureMap[name] = currentValue;
 				setOverrides({ [name]: currentValue });
@@ -309,13 +309,13 @@ ${Spicetify.SVGIcons.search}
 		content.appendChild(resetButton);
 	})();
 
-	await new Promise((res) => Spicetify.Events.webpackLoaded.on(res));
+	await new Promise((res) => Spotifier.Events.webpackLoaded.on(res));
 
-	new Spicetify.Menu.Item(
+	new Spotifier.Menu.Item(
 		"Experimental features",
 		false,
 		() => {
-			Spicetify.PopupModal.display({
+			Spotifier.PopupModal.display({
 				title: "Experimental features",
 				content,
 				isLarge: true,

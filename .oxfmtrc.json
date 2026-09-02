@@ -5,7 +5,7 @@
   "tabWidth": 2,
   "trailingComma": "all",
   "arrowParens": "always",
-  "ignorePatterns": ["jsHelper/spicetifyWrapper.js"],
+  "ignorePatterns": ["jsHelper/spotifierWrapper.js"],
   "sortImports": {
     "newlinesBetwenen": true,
     "groups": ["type-import", ["builtin", "external"], "internal", ["parent", "sibling", "index"], "unknown"]

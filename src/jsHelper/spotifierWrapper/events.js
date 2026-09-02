@@ -1,4 +1,4 @@
-Spicetify.Events = (() => {
+Spotifier.Events = (() => {
   class Event {
     callbacks = [];
     on(callback) {
@@ -12,7 +12,7 @@ Spicetify.Events = (() => {
         try {
           callback();
         } catch (err) {
-          console.error("[spicetifyWrapper] Event listener threw an error", err);
+          console.error("[spotifierWrapper] Event listener threw an error", err);
         }
       }
     }

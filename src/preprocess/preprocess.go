@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"github.com/pterm/pterm"
-	"github.com/spicetify/cli/src/utils"
+	"github.com/spotifier/cli/src/utils"
 )
 
 // Flag enables/disables preprocesses to be applied
@@ -26,7 +26,7 @@ type Flag struct {
 	DisableLogging bool
 	// RemoveRTL removes all Right-To-Left CSS rules to simplify CSS files.
 	RemoveRTL bool
-	// ExposeAPIs leaks Spotify's API, functions, objects to Spicetify global object.
+	// ExposeAPIs leaks Spotify's API, functions, objects to Spotifier global object.
 	ExposeAPIs bool
 	SpotifyVer string
 }
@@ -50,7 +50,7 @@ func applyPatches(input string, patches []Patch) string {
 }
 
 func readRemoteCssMap(tag string, cssTranslationMap *map[string]string) error {
-	var cssMapURL string = "https://raw.githubusercontent.com/spicetify/cli/" + tag + "/css-map.json"
+	var cssMapURL string = "https://raw.githubusercontent.com/ValveularGT/Spotifier/" + tag + "/css-map.json"
 	cssMapResp, err := http.Get(cssMapURL)
 	if err != nil {
 		return err
@@ -254,7 +254,7 @@ func Start(version string, spotifyBasePath string, extractedAppsPath string, fla
 					// to avoid syntaxerror on Spotify 1.2.78 and above
 					if spotifyMajor >= 1 && spotifyMinor >= 2 && spotifyPatch < 78 {
 						utils.ReplaceOnce(&content, `\(\({[^}]*,\s*imageSrc`, func(submatches ...string) string {
-							return fmt.Sprintf("Spicetify.Snackbar.enqueueImageSnackbar=%s", submatches[0])
+							return fmt.Sprintf("Spotifier.Snackbar.enqueueImageSnackbar=%s", submatches[0])
 						})
 					}
 
@@ -308,8 +308,8 @@ func Start(version string, spotifyBasePath string, extractedAppsPath string, fla
 				tags += "<link rel='stylesheet' class='userCSS' href='user.css'>\n"
 
 				if flags.ExposeAPIs {
-					tags += "<script src='helper/spicetifyWrapper.js'></script>\n"
-					tags += "<!-- spicetify helpers -->\n"
+					tags += "<script src='helper/spotifierWrapper.js'></script>\n"
+					tags += "<!-- spotifier helpers -->\n"
 				}
 
 				utils.Replace(&content, `<body(\sclass="[^"]*")?>`, func(submatches ...string) string {
@@ -856,14 +856,14 @@ func additionalPatches(input string) string {
 			Name:  "GraphQL definitions (<=1.2.30)",
 			Regex: `((?:\w+ ?)?[\w$]+=)(\{kind:"Document",definitions:\[\{(?:\w+:[\w"]+,)+name:\{(?:\w+:[\w"]+,?)+value:("\w+"))`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetify.GraphQL.Definitions[%s]=%s", submatches[1], submatches[3], submatches[2])
+				return fmt.Sprintf("%sSpotifier.GraphQL.Definitions[%s]=%s", submatches[1], submatches[3], submatches[2])
 			},
 		},
 		{
 			Name:  "GraphQL definitions (>=1.2.31)",
 			Regex: `(=new [\w_\$][\w_\$\d]*\.[\w_\$][\w_\$\d]*\("(\w+)","(query|mutation)","[\w\d]{64}",null\))`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf(`=Spicetify.GraphQL.Definitions["%s"]%s`, submatches[2], submatches[1])
+				return fmt.Sprintf(`=Spotifier.GraphQL.Definitions["%s"]%s`, submatches[2], submatches[1])
 			},
 		},
 	}
@@ -894,7 +894,7 @@ func exposeAPIs_main(input string) string {
 		}
 
 		utils.Replace(&input, `\(0,([\w_$]+)\.jsx\)\((?:[\w_$]+\.[\w_$]+,\{value:"contextmenu"[^}]+\}\)\}\)|"[\w-]+",\{[^}]+:"context-menu"[^}]+\}\))`, func(submatches ...string) string {
-			return fmt.Sprintf("(0,%s.jsx)((Spicetify.ContextMenuV2._context||(Spicetify.ContextMenuV2._context=%s.createContext(null))).Provider,{value:{props:%s?.props,trigger:%s,target:%s},children:%s})", submatches[1], react, menu, trigger, target, submatches[0])
+			return fmt.Sprintf("(0,%s.jsx)((Spotifier.ContextMenuV2._context||(Spotifier.ContextMenuV2._context=%s.createContext(null))).Provider,{value:{props:%s?.props,trigger:%s,target:%s},children:%s})", submatches[1], react, menu, trigger, target, submatches[0])
 		})
 	}
 
@@ -903,7 +903,7 @@ func exposeAPIs_main(input string) string {
 			Name:  "showNotification",
 			Regex: `(?:\w+ |,)([\w$]+)=(\([\w$]+=[\w$]+\.dispatch)`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf(`;globalThis.Spicetify.showNotification=(message,isError=false,msTimeout)=>%s({message,feedbackType:isError?"ERROR":"NOTICE",msTimeout});const %s=%s`, submatches[1], submatches[1], submatches[2])
+				return fmt.Sprintf(`;globalThis.Spotifier.showNotification=(message,isError=false,msTimeout)=>%s({message,feedbackType:isError?"ERROR":"NOTICE",msTimeout});const %s=%s`, submatches[1], submatches[1], submatches[2])
 			},
 		},
 		{
@@ -931,21 +931,21 @@ func exposeAPIs_main(input string) string {
 			Name:  "Expose PlatformAPI",
 			Regex: `((?:setTitlebarHeight|registerFactory)[\w(){}<>:.,&$!=;""?!#%/\- ]+)(\{version:[a-zA-Z_\$][\w\$]*,)`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetify._platform=%s", submatches[1], submatches[2])
+				return fmt.Sprintf("%sSpotifier._platform=%s", submatches[1], submatches[2])
 			},
 		},
 		{
 			Name:  "Redux store",
 			Regex: `(,[\w$]+=)(([$\w,.:=;(){}]+\(\{session:[\w$]+,features:[\w$]+,seoExperiment:[\w$]+\}))`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetify.Platform.ReduxStore=%s", submatches[1], submatches[2])
+				return fmt.Sprintf("%sSpotifier.Platform.ReduxStore=%s", submatches[1], submatches[2])
 			},
 		},
 		{
 			Name:  "React Component: Platform Provider",
 			Regex: `(,[$\w]+=)((function\([\w$]{1}\)\{var [\w$]+=[\w$]+\.platform,[\w$]+=[\w$]+\.children,)|(\(\{platform:[\w$]+,children:[\w$]+\}\)=>\{))`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetify.ReactComponent.PlatformProvider=%s", submatches[1], submatches[2])
+				return fmt.Sprintf("%sSpotifier.ReactComponent.PlatformProvider=%s", submatches[1], submatches[2])
 			},
 		},
 		{
@@ -959,28 +959,28 @@ func exposeAPIs_main(input string) string {
 			Name:  "Spotify Custom Snackbar Interfaces (<=1.2.37)",
 			Regex: `\b\w\s*\(\)\s*[^;,]*enqueueCustomSnackbar:\s*(\w)\s*[^;]*;`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetify.Snackbar.enqueueCustomSnackbar=%s;", submatches[0], submatches[1])
+				return fmt.Sprintf("%sSpotifier.Snackbar.enqueueCustomSnackbar=%s;", submatches[0], submatches[1])
 			},
 		},
 		{
 			Name:  "Spotify Custom Snackbar Interfaces (>=1.2.38)",
 			Regex: `(=)[^=]*\(\)\.enqueueCustomSnackbar;`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("=Spicetify.Snackbar.enqueueCustomSnackbar%s;", submatches[0])
+				return fmt.Sprintf("=Spotifier.Snackbar.enqueueCustomSnackbar%s;", submatches[0])
 			},
 		},
 		{
 			Name:  "Spotify Image Snackbar Interface",
 			Regex: `(=)(\(\({[^}]*,\s*imageSrc)`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetify.Snackbar.enqueueImageSnackbar=%s", submatches[1], submatches[2])
+				return fmt.Sprintf("%sSpotifier.Snackbar.enqueueImageSnackbar=%s", submatches[1], submatches[2])
 			},
 		},
 		{
 			Name:  "React Component: Navigation for navLinks",
 			Regex: `(;const [\w\d]+=)((?:\(0,[\w\d]+\.memo\))[\(\d,\w\.\){:}=]+\=[\d\w]+\.[\d\w]+\.getLocaleForURLPath\(\))`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetify.ReactComponent.Navigation=%s", submatches[1], submatches[2])
+				return fmt.Sprintf("%sSpotifier.ReactComponent.Navigation=%s", submatches[1], submatches[2])
 			},
 			Once: true,
 		},
@@ -988,7 +988,7 @@ func exposeAPIs_main(input string) string {
 			Name:  "Context Menu V2",
 			Regex: `("Menu".+?children:)([\w$][\w$\d]*)`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%s[Spicetify.ContextMenuV2.renderItems(),%s].flat()", submatches[1], submatches[2])
+				return fmt.Sprintf("%s[Spotifier.ContextMenuV2.renderItems(),%s].flat()", submatches[1], submatches[2])
 			},
 		},
 	}
@@ -1002,35 +1002,35 @@ func exposeAPIs_vendor(input string) string {
 		&input,
 		`,(\w+)\.prototype\.toAppType`,
 		func(submatches ...string) string {
-			return fmt.Sprintf(`,(globalThis.Spicetify.URI=%s)%s`, submatches[1], submatches[0])
+			return fmt.Sprintf(`,(globalThis.Spotifier.URI=%s)%s`, submatches[1], submatches[0])
 		})
 	vendorPatches := []Patch{
 		{
-			Name:  "Spicetify.URI",
+			Name:  "Spotifier.URI",
 			Regex: `,(\w+)\.prototype\.toAppType`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf(`,(globalThis.Spicetify.URI=%s)%s`, submatches[1], submatches[0])
+				return fmt.Sprintf(`,(globalThis.Spotifier.URI=%s)%s`, submatches[1], submatches[0])
 			},
 		},
 		{
 			Name:  "Map styled-components classes",
 			Regex: `(\w+ [\w$_]+)=[\w$_]+\([\w$_]+>>>0\)`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%s=Spicetify._getStyledClassName(arguments,this)", submatches[1])
+				return fmt.Sprintf("%s=Spotifier._getStyledClassName(arguments,this)", submatches[1])
 			},
 		},
 		{
 			Name:  "Tippy.js",
 			Regex: `([\w\$_]+)\.setDefaultProps=`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("Spicetify.Tippy=%s;%s", submatches[1], submatches[0])
+				return fmt.Sprintf("Spotifier.Tippy=%s;%s", submatches[1], submatches[0])
 			},
 		},
 		{
 			Name:  "Flipper components",
 			Regex: `([\w$]+)=((?:function|\()([\w$.,{}()= ]+(?:springConfig|overshootClamping)){2})`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("%s=Spicetify.ReactFlipToolkit.spring=%s", submatches[1], submatches[2])
+				return fmt.Sprintf("%s=Spotifier.ReactFlipToolkit.spring=%s", submatches[1], submatches[2])
 			},
 		},
 		{
@@ -1038,13 +1038,13 @@ func exposeAPIs_vendor(input string) string {
 			Name:  "Snackbar",
 			Regex: `\w+\s*=\s*\w\.call\(this,[^)]+\)\s*\|\|\s*this\)\.enqueueSnackbar`,
 			Replacement: func(submatches ...string) string {
-				return fmt.Sprintf("Spicetify.Snackbar=%s", submatches[0])
+				return fmt.Sprintf("Spotifier.Snackbar=%s", submatches[0])
 			},
 		},
 	}
 
 	// URI after 1.2.4
-	if !strings.Contains(input, "Spicetify.URI") {
+	if !strings.Contains(input, "Spotifier.URI") {
 		URIObj := regexp.MustCompile(`(?:class ([\w$_]+)\{constructor|([\w$_]+)=function\(\)\{function ?[\w$_]+)\([\w$.,={}]+\)\{[\w !?:=.,>&(){}[\];]*this\.hasBase62Id`).FindStringSubmatch(input)
 
 		if len(URIObj) != 0 {
@@ -1062,7 +1062,7 @@ func exposeAPIs_vendor(input string) string {
 			input = strings.Replace(
 				input,
 				URI,
-				fmt.Sprintf("%s;Spicetify.URI=%s;", URI, URIObj[1]),
+				fmt.Sprintf("%s;Spotifier.URI=%s;", URI, URIObj[1]),
 				1)
 		}
 	}
@@ -1086,7 +1086,7 @@ func validateReleaseBuild(spotifyBinaryPath string) error {
 
 	buildType := string(matches[1])
 	if buildType != "Release" {
-		return fmt.Errorf("detected %s Spotify build! spicetify works only on Release builds. Please install latest Release version of Spotify", buildType)
+		return fmt.Errorf("detected %s Spotify build! spotifier works only on Release builds. Please install latest Release version of Spotify", buildType)
 	}
 
 	utils.PrintSuccess(fmt.Sprintf("Spotify's build type is %s. Continuing...", string(matches[1])))
@@ -1140,7 +1140,7 @@ func FetchLatestTagMatchingVersion(version string) (string, error) {
 	if version == "Dev" {
 		return "Dev", nil
 	}
-	res, err := http.Get("https://api.github.com/repos/spicetify/cli/releases")
+	res, err := http.Get("https://api.github.com/repos/ValveularGT/Spotifier/releases")
 	if err != nil {
 		return "", err
 	}

@@ -1,8 +1,8 @@
 # Executables
 bin
 cli
-spicetify
-spicetify-cli
+spotifier
+spotifier-cli
 *.exe
 
 # MacOS
@@ -12,8 +12,8 @@ spicetify-cli
 node_modules
 
 # Generated wrapper bundle
-jsHelper/spicetifyWrapper.js
-jsHelper/spicetifyWrapper.js.map
+jsHelper/spotifierWrapper.js
+jsHelper/spotifierWrapper.js.map
 
 # Logs
 install.log

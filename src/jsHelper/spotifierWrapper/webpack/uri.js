@@ -198,12 +198,12 @@ export function waitForURI(cache) {
   const inventory = normalizeInventory(cache);
 
   (function waitForURI(attempt = 0) {
-    if (!Spicetify.URI) {
+    if (!Spotifier.URI) {
       setTimeout(() => waitForURI(attempt + 1), Math.min(10 * 2 ** Math.min(attempt, 6), 500));
       return;
     }
 
-    if (Spicetify.URI.Type && Spicetify.URI.from && Spicetify.URI.fromString && Spicetify.URI.idToHex && Spicetify.URI.hexToId) return;
+    if (Spotifier.URI.Type && Spotifier.URI.from && Spotifier.URI.fromString && Spotifier.URI.idToHex && Spotifier.URI.hexToId) return;
 
     const URIExports = getURIExports(inventory.cache);
     if (!URIExports) {
@@ -211,8 +211,8 @@ export function waitForURI(cache) {
       return;
     }
 
-    Spicetify.URI.Type ??= getURIType(URIExports);
-    if (!Spicetify.URI.Type) {
+    Spotifier.URI.Type ??= getURIType(URIExports);
+    if (!Spotifier.URI.Type) {
       setTimeout(() => waitForURI(attempt + 1), Math.min(100 * 2 ** Math.min(attempt, 4), 1000));
       return;
     }
@@ -220,47 +220,47 @@ export function waitForURI(cache) {
     const URIModules = getURIFunctions(URIExports);
     const allFunctions = [...new Set([...URIModules, ...inventory.functionModules])];
 
-    Spicetify.URI.fromString ??= findURIFromString(URIExports, allFunctions);
-    Spicetify.URI.from ??= findURIFrom(URIExports, allFunctions) ?? Spicetify.URI.fromString;
+    Spotifier.URI.fromString ??= findURIFromString(URIExports, allFunctions);
+    Spotifier.URI.from ??= findURIFrom(URIExports, allFunctions) ?? Spotifier.URI.fromString;
 
     // createURI functions
     const createURIFunctions = URIModules.filter((m) => fnStr(m).match(/\([\w$]+\./));
-    for (const type of Object.keys(Spicetify.URI.Type)) {
+    for (const type of Object.keys(Spotifier.URI.Type)) {
       const func = createURIFunctions.find((m) => fnStr(m).match(new RegExp(`\\([\\w$]+\\.${type}(?!_)`)));
       if (!func) continue;
 
       const camelCaseType = toCamelCase(type);
-      Spicetify.URI[`${camelCaseType}URI`] = func;
+      Spotifier.URI[`${camelCaseType}URI`] = func;
     }
 
     // isURI functions
     const isURIFunctions = URIModules.filter((m) => fnStr(m).match(/=[\w$]+\./));
-    for (const type of Object.keys(Spicetify.URI.Type)) {
+    for (const type of Object.keys(Spotifier.URI.Type)) {
       const func = isURIFunctions.find((m) => fnStr(m).match(new RegExp(`===[\\w$]+\\.${type}(?!_)\\}`)));
       const camelCaseType = toCamelCase(type, true);
 
-      Spicetify.URI[`is${camelCaseType}`] =
+      Spotifier.URI[`is${camelCaseType}`] =
         func ??
         ((uri) => {
           let uriObj;
           try {
-            uriObj = Spicetify.URI.from?.(uri) ?? Spicetify.URI.fromString?.(uri);
+            uriObj = Spotifier.URI.from?.(uri) ?? Spotifier.URI.fromString?.(uri);
           } catch {
             return false;
           }
           if (!uriObj) return false;
-          return uriObj.type === Spicetify.URI.Type[type];
+          return uriObj.type === Spotifier.URI.Type[type];
         });
     }
 
-    Spicetify.URI.isPlaylistV1OrV2 = (uri) => Spicetify.URI.isPlaylist(uri) || Spicetify.URI.isPlaylistV2(uri);
+    Spotifier.URI.isPlaylistV1OrV2 = (uri) => Spotifier.URI.isPlaylist(uri) || Spotifier.URI.isPlaylistV2(uri);
 
     const base62 = findBase62Module(inventory.moduleCandidates);
 
-    Spicetify.URI.idToHex ??= findIDToHex(allFunctions) ?? (base62 ? createIDToHex(base62) : undefined);
-    Spicetify.URI.hexToId ??= findHexToID(allFunctions, Spicetify.URI.idToHex) ?? (base62 ? createHexToID(base62) : undefined);
+    Spotifier.URI.idToHex ??= findIDToHex(allFunctions) ?? (base62 ? createIDToHex(base62) : undefined);
+    Spotifier.URI.hexToId ??= findHexToID(allFunctions, Spotifier.URI.idToHex) ?? (base62 ? createHexToID(base62) : undefined);
 
     // isSameIdentity
-    Spicetify.URI.isSameIdentity ??= URIModules.find((m) => fnStr(m).match(/[\w$]+\.id===[\w$]+\.id/));
+    Spotifier.URI.isSameIdentity ??= URIModules.find((m) => fnStr(m).match(/[\w$]+\.id===[\w$]+\.id/));
   })();
 }

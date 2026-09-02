@@ -9,7 +9,7 @@ function getManifest(app) {
   if (manifestCache.has(app)) return manifestCache.get(app);
 
   manifestCache.set(app, {});
-  fetch(`spicetify-routes-${app}.json`)
+  fetch(`spotifier-routes-${app}.json`)
     .then((res) => res.json())
     .then((manifest) => {
       manifestCache.set(app, manifest);
@@ -22,23 +22,23 @@ function getManifest(app) {
   return {};
 }
 
-Spicetify._renderNavLinks = (list, isTouchScreenUi) => {
-  const [, refresh] = Spicetify.React.useReducer((x) => x + 1, 0);
+Spotifier._renderNavLinks = (list, isTouchScreenUi) => {
+  const [, refresh] = Spotifier.React.useReducer((x) => x + 1, 0);
   refreshNavLinks = refresh;
 
   if (
-    !Spicetify.ReactComponent.ButtonTertiary ||
-    !Spicetify.ReactComponent.Navigation ||
-    !Spicetify.ReactComponent.TooltipWrapper ||
-    !Spicetify.ReactComponent.ScrollableContainer ||
-    !Spicetify.Platform.History ||
-    !Spicetify.Platform.LocalStorageAPI
+    !Spotifier.ReactComponent.ButtonTertiary ||
+    !Spotifier.ReactComponent.Navigation ||
+    !Spotifier.ReactComponent.TooltipWrapper ||
+    !Spotifier.ReactComponent.ScrollableContainer ||
+    !Spotifier.Platform.History ||
+    !Spotifier.Platform.LocalStorageAPI
   )
     return;
 
   const navLinkFactory = isTouchScreenUi ? NavLinkGlobal : NavLinkSidebar;
 
-  if (!navLinkFactoryCtx) navLinkFactoryCtx = Spicetify.React.createContext(null);
+  if (!navLinkFactoryCtx) navLinkFactoryCtx = Spotifier.React.createContext(null);
   const registered = [];
 
   for (const app of list) {
@@ -46,7 +46,7 @@ Spicetify._renderNavLinks = (list, isTouchScreenUi) => {
 
     let appProper = manifest.name;
     if (typeof appProper === "object") {
-      appProper = appProper[Spicetify.Locale?.getLocale()] || appProper.en;
+      appProper = appProper[Spotifier.Locale?.getLocale()] || appProper.en;
     }
     if (!appProper) {
       appProper = app[0].toUpperCase() + app.slice(1);
@@ -58,9 +58,9 @@ Spicetify._renderNavLinks = (list, isTouchScreenUi) => {
   }
 
   (function addStyling() {
-    if (document.querySelector("style.spicetify-navlinks")) return;
+    if (document.querySelector("style.spotifier-navlinks")) return;
     const style = document.createElement("style");
-    style.className = "spicetify-navlinks";
+    style.className = "spotifier-navlinks";
     style.innerHTML = `
 	:root {
 		--max-custom-navlink-count: 4;
@@ -88,69 +88,69 @@ Spicetify._renderNavLinks = (list, isTouchScreenUi) => {
   })();
 
   const wrapScrollableContainer = (element) =>
-    Spicetify.React.createElement(
+    Spotifier.React.createElement(
       "div",
       { className: "custom-navlinks-scrollable_container" },
-      Spicetify.React.createElement(Spicetify.ReactComponent.ScrollableContainer, null, element),
+      Spotifier.React.createElement(Spotifier.ReactComponent.ScrollableContainer, null, element),
     );
 
   const NavLinks = () =>
-    Spicetify.React.createElement(
+    Spotifier.React.createElement(
       navLinkFactoryCtx.Provider,
       { value: navLinkFactory },
-      registered.map((NavLinkElement) => Spicetify.React.createElement(NavLink, NavLinkElement, null)),
+      registered.map((NavLinkElement) => Spotifier.React.createElement(NavLink, NavLinkElement, null)),
     );
 
   return isTouchScreenUi ? wrapScrollableContainer(NavLinks()) : NavLinks();
 };
 
 const NavLink = ({ appProper, appRoutePath, icon, activeIcon }) => {
-  const isActive = Spicetify.Platform.History.location.pathname?.startsWith(appRoutePath);
+  const isActive = Spotifier.Platform.History.location.pathname?.startsWith(appRoutePath);
   const createIcon = () => createIconComponent(isActive ? activeIcon : icon, 24);
 
-  const NavLinkFactory = Spicetify.React.useContext(navLinkFactoryCtx);
+  const NavLinkFactory = Spotifier.React.useContext(navLinkFactoryCtx);
 
-  return NavLinkFactory && Spicetify.React.createElement(NavLinkFactory, { appProper, appRoutePath, createIcon, isActive }, null);
+  return NavLinkFactory && Spotifier.React.createElement(NavLinkFactory, { appProper, appRoutePath, createIcon, isActive }, null);
 };
 
 const NavLinkSidebar = ({ appProper, appRoutePath, createIcon, isActive }) => {
-  const isSidebarCollapsed = Spicetify.Platform.LocalStorageAPI.getItem("ylx-sidebar-state") === 1;
+  const isSidebarCollapsed = Spotifier.Platform.LocalStorageAPI.getItem("ylx-sidebar-state") === 1;
 
-  return Spicetify.React.createElement(
+  return Spotifier.React.createElement(
     "li",
     { className: "main-yourLibraryX-navItem InvalidDropTarget" },
-    Spicetify.React.createElement(
-      Spicetify.ReactComponent.TooltipWrapper,
+    Spotifier.React.createElement(
+      Spotifier.ReactComponent.TooltipWrapper,
       { label: isSidebarCollapsed ? appProper : null, disabled: !isSidebarCollapsed, placement: "right" },
-      Spicetify.React.createElement(
-        Spicetify.ReactComponent.Navigation,
+      Spotifier.React.createElement(
+        Spotifier.ReactComponent.Navigation,
         {
           to: appRoutePath,
           referrer: "other",
-          className: Spicetify.classnames("link-subtle", "main-yourLibraryX-navLink", {
+          className: Spotifier.classnames("link-subtle", "main-yourLibraryX-navLink", {
             "main-yourLibraryX-navLinkActive": isActive,
           }),
           onClick: () => undefined,
           "aria-label": appProper,
         },
         createIcon(),
-        !isSidebarCollapsed && Spicetify.React.createElement(Spicetify.ReactComponent.TextComponent, { variant: "balladBold" }, appProper),
+        !isSidebarCollapsed && Spotifier.React.createElement(Spotifier.ReactComponent.TextComponent, { variant: "balladBold" }, appProper),
       ),
     ),
   );
 };
 
 const NavLinkGlobal = ({ appProper, appRoutePath, createIcon, isActive }) => {
-  return Spicetify.React.createElement(
-    Spicetify.ReactComponent.TooltipWrapper,
+  return Spotifier.React.createElement(
+    Spotifier.ReactComponent.TooltipWrapper,
     { label: appProper },
-    Spicetify.React.createElement(Spicetify.ReactComponent.ButtonTertiary, {
+    Spotifier.React.createElement(Spotifier.ReactComponent.ButtonTertiary, {
       iconOnly: createIcon,
-      className: Spicetify.classnames("link-subtle", "main-globalNav-navLink", "main-globalNav-link-icon", "custom-navlink", {
+      className: Spotifier.classnames("link-subtle", "main-globalNav-navLink", "main-globalNav-link-icon", "custom-navlink", {
         "main-globalNav-navLinkActive": isActive,
       }),
       "aria-label": appProper,
-      onClick: () => Spicetify.Platform.History.push(appRoutePath),
+      onClick: () => Spotifier.Platform.History.push(appRoutePath),
     }),
   );
 };

@@ -1,6 +1,6 @@
 class _HTMLGenericModal extends HTMLElement {
   hide() {
-    Spicetify.ReactDOM.unmountComponentAtNode(this.querySelector("main"));
+    Spotifier.ReactDOM.unmountComponentAtNode(this.querySelector("main"));
     this.remove();
   }
 
@@ -30,8 +30,8 @@ class _HTMLGenericModal extends HTMLElement {
       if (!this.querySelector(".GenericModal").contains(event.target)) hidePopup();
     });
 
-    if (Spicetify.React.isValidElement(content)) {
-      Spicetify.ReactDOM.render(content, main);
+    if (Spotifier.React.isValidElement(content)) {
+      Spotifier.ReactDOM.render(content, main);
     } else if (typeof content === "string") {
       main.innerHTML = content;
     } else {
@@ -41,9 +41,9 @@ class _HTMLGenericModal extends HTMLElement {
   }
 }
 customElements.define("generic-modal", _HTMLGenericModal);
-Spicetify.PopupModal = new _HTMLGenericModal();
+Spotifier.PopupModal = new _HTMLGenericModal();
 
-Object.defineProperty(Spicetify, "TippyProps", {
+Object.defineProperty(Spotifier, "TippyProps", {
   value: {
     delay: [200, 0],
     animation: true,

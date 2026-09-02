@@ -1,12 +1,12 @@
 {
-  "name": "@spicetify/cli",
+  "name": "@spotifier/cli",
   "private": true,
   "type": "module",
   "scripts": {
     "build:wrapper": "node scripts/build-wrapper.mjs",
     "check:wrapper": "node scripts/build-wrapper.mjs --check",
-    "fmt": "oxfmt scripts src/jsHelper/spicetifyWrapper package.json .oxfmtrc.json .oxlintrc.json",
-    "fmt:check": "oxfmt --check scripts src/jsHelper/spicetifyWrapper package.json .oxfmtrc.json .oxlintrc.json",
+    "fmt": "oxfmt scripts src/jsHelper/spotifierWrapper package.json .oxfmtrc.json .oxlintrc.json",
+    "fmt:check": "oxfmt --check scripts src/jsHelper/spotifierWrapper package.json .oxfmtrc.json .oxlintrc.json",
     "lint": "oxlint ."
   },
   "devDependencies": {

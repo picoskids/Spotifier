@@ -13,7 +13,7 @@ const OptionsMenuItemIcon = react.createElement(
 
 const OptionsMenuItem = react.memo(({ onSelect, value, isSelected }) => {
 	return react.createElement(
-		Spicetify.ReactComponent.MenuItem,
+		Spotifier.ReactComponent.MenuItem,
 		{
 			onClick: onSelect,
 			icon: isSelected ? OptionsMenuItemIcon : null,
@@ -25,21 +25,21 @@ const OptionsMenuItem = react.memo(({ onSelect, value, isSelected }) => {
 
 const OptionsMenu = react.memo(({ options, onSelect, selected, defaultValue, bold = false }) => {
 	/**
-	 * <Spicetify.ReactComponent.ContextMenu
+	 * <Spotifier.ReactComponent.ContextMenu
 	 *      menu = { options.map(a => <OptionsMenuItem>) }
 	 * >
 	 *      <button>
 	 *          <span> {select.value} </span>
 	 *          <svg> arrow icon </svg>
 	 *      </button>
-	 * </Spicetify.ReactComponent.ContextMenu>
+	 * </Spotifier.ReactComponent.ContextMenu>
 	 */
 	const menuRef = react.useRef(null);
 	return react.createElement(
-		Spicetify.ReactComponent.ContextMenu,
+		Spotifier.ReactComponent.ContextMenu,
 		{
 			menu: react.createElement(
-				Spicetify.ReactComponent.Menu,
+				Spotifier.ReactComponent.Menu,
 				{},
 				options.map(({ key, value }) =>
 					react.createElement(OptionsMenuItem, {
@@ -293,7 +293,7 @@ const TranslationMenu = react.memo(({ friendlyLanguage, hasTranslation, musixmat
 	}, [friendlyLanguage, items]);
 
 	return react.createElement(
-		Spicetify.ReactComponent.TooltipWrapper,
+		Spotifier.ReactComponent.TooltipWrapper,
 		{
 			label: "Conversion",
 		},
@@ -303,10 +303,10 @@ const TranslationMenu = react.memo(({ friendlyLanguage, hasTranslation, musixmat
 				className: "lyrics-tooltip-wrapper",
 			},
 			react.createElement(
-				Spicetify.ReactComponent.ContextMenu,
+				Spotifier.ReactComponent.ContextMenu,
 				{
 					menu: react.createElement(
-						Spicetify.ReactComponent.Menu,
+						Spotifier.ReactComponent.Menu,
 						{},
 						react.createElement("h3", null, " Conversions"),
 						react.createElement(OptionList, {
@@ -368,7 +368,7 @@ const TranslationMenu = react.memo(({ friendlyLanguage, hasTranslation, musixmat
 
 const AdjustmentsMenu = react.memo(({ mode, hasPerformer }) => {
 	return react.createElement(
-		Spicetify.ReactComponent.TooltipWrapper,
+		Spotifier.ReactComponent.TooltipWrapper,
 		{
 			label: "Adjustments",
 		},
@@ -378,10 +378,10 @@ const AdjustmentsMenu = react.memo(({ mode, hasPerformer }) => {
 				className: "lyrics-tooltip-wrapper",
 			},
 			react.createElement(
-				Spicetify.ReactComponent.ContextMenu,
+				Spotifier.ReactComponent.ContextMenu,
 				{
 					menu: react.createElement(
-						Spicetify.ReactComponent.Menu,
+						Spotifier.ReactComponent.Menu,
 						{},
 						react.createElement("h3", null, " Adjustments"),
 						react.createElement(OptionList, {
@@ -433,7 +433,7 @@ const AdjustmentsMenu = react.memo(({ mode, hasPerformer }) => {
 							onChange: (name, value) => {
 								CONFIG.visual[name] = value;
 								localStorage.setItem(`${APP_NAME}:visual:${name}`, value);
-								name === "delay" && localStorage.setItem(`lyrics-delay:${Spicetify.Player.data.item.uri}`, value);
+								name === "delay" && localStorage.setItem(`lyrics-delay:${Spotifier.Player.data.item.uri}`, value);
 								lyricContainerUpdate?.();
 							},
 						})

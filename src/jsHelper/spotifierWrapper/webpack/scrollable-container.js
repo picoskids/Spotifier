@@ -13,41 +13,41 @@ export function createScrollableContainer() {
       if (stylesInjected) return;
       stylesInjected = true;
       const style = document.createElement("style");
-      style.className = "spicetify-scrollable-container";
+      style.className = "spotifier-scrollable-container";
       style.textContent = `
-.spicetify-sc-contentArea { overflow: hidden; position: relative; }
-.spicetify-sc-scroller { display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; white-space: nowrap; width: 100%; -ms-overflow-style: none; overscroll-behavior-x: contain; will-change: transform; }
-@media (prefers-reduced-motion: no-preference) { .spicetify-sc-scroller { scroll-behavior: smooth; } }
-.spicetify-sc-scroller::-webkit-scrollbar { display: none; }
-.spicetify-sc-scroller.spicetify-sc-snap { scroll-snap-type: inline mandatory; }
-.spicetify-sc-scroller.spicetify-sc-snap .spicetify-sc-snapCenter [data-carousel-item] { scroll-snap-align: center; }
-.spicetify-sc-scroller.spicetify-sc-snap .spicetify-sc-snapStart [data-carousel-item] { scroll-snap-align: start; }
-.spicetify-sc-scroller.spicetify-sc-wheelEnabled { overscroll-behavior: contain; }
-.spicetify-sc-scroller.spicetify-sc-maskGradient { --sc-start-color: #000; --sc-end-color: #000; -webkit-mask-composite: source-in, xor; mask-composite: intersect; -webkit-mask-image: linear-gradient(90deg, var(--sc-start-color) 0, #000 120px), linear-gradient(90deg, #000 calc(100% - 120px), var(--sc-end-color) 100%); mask-image: linear-gradient(90deg, var(--sc-start-color) 0, #000 120px), linear-gradient(90deg, #000 calc(100% - 120px), var(--sc-end-color) 100%); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
-.spicetify-sc-scroller.spicetify-sc-maskGradient.spicetify-sc-maskStart { --sc-start-color: transparent; }
-.spicetify-sc-scroller.spicetify-sc-maskGradient.spicetify-sc-maskEnd { --sc-end-color: transparent; }
-.spicetify-sc-linearGradient::before, .spicetify-sc-linearGradient::after { bottom: 0; content: ""; height: 100%; opacity: 0; pointer-events: none; position: absolute; top: 0; transition: opacity .15s ease-out; width: 120px; z-index: 2; }
-.spicetify-sc-linearGradient::before { background: linear-gradient(90deg, var(--carousel-start-chevron-gradient, var(--spice-main)) 0, transparent 100%); inset-inline-start: 0; }
-.spicetify-sc-linearGradient::after { background: linear-gradient(-90deg, var(--carousel-end-chevron-gradient, var(--spice-main)) 0, transparent 100%); inset-inline-end: 0; }
-.spicetify-sc-linearGradient.spicetify-sc-lgStart::before { opacity: 1; }
-.spicetify-sc-linearGradient.spicetify-sc-lgEnd::after { opacity: 1; }
-.spicetify-sc-carousel { bottom: 0; left: 0; position: absolute; right: 0; top: 0; justify-content: space-between; align-items: center; display: flex; pointer-events: none; }
-.spicetify-sc-chevronBtn { display: flex; border: none; border-radius: 50%; cursor: pointer; justify-content: center; align-items: center; backdrop-filter: var(--chevrons-button-backdrop-filter, none); background: transparent; background-color: var(--chevrons-button-color, var(--background-elevated-base)); height: 24px; opacity: 0; position: relative; transition: color .15s ease-out, opacity .15s ease-out, background-color .15s ease-out, translate .15s ease-out; translate: 0; width: 24px; z-index: 3; pointer-events: none; color: var(--text-base, #fff); }
-.spicetify-sc-chevronBtn > * { opacity: .7; z-index: 2; }
-.spicetify-sc-chevronBtn:hover { background-color: var(--chevrons-button-hover-color, var(--background-elevated-highlight)); }
-.spicetify-sc-chevronBtn:hover > * { opacity: 1; }
-.spicetify-sc-chevronBtn.spicetify-sc-chevronVisible { opacity: 1; pointer-events: auto; }
-.spicetify-sc-onHover .spicetify-sc-chevronBtn { opacity: 0; }
-.spicetify-sc-contentArea:hover .spicetify-sc-onHover .spicetify-sc-chevronBtn.spicetify-sc-chevronVisible { opacity: 1; }
-.spicetify-sc-contentArea:hover .spicetify-sc-onHover .spicetify-sc-chevronStart.spicetify-sc-chevronVisible { translate: 8px; }
-.spicetify-sc-contentArea:hover .spicetify-sc-onHover .spicetify-sc-chevronEnd.spicetify-sc-chevronVisible { translate: -8px; }
-.spicetify-sc-scroller > div[role="presentation"] > button { margin-inline-start: 0px !important; }
-body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`;
+.spotifier-sc-contentArea { overflow: hidden; position: relative; }
+.spotifier-sc-scroller { display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; white-space: nowrap; width: 100%; -ms-overflow-style: none; overscroll-behavior-x: contain; will-change: transform; }
+@media (prefers-reduced-motion: no-preference) { .spotifier-sc-scroller { scroll-behavior: smooth; } }
+.spotifier-sc-scroller::-webkit-scrollbar { display: none; }
+.spotifier-sc-scroller.spotifier-sc-snap { scroll-snap-type: inline mandatory; }
+.spotifier-sc-scroller.spotifier-sc-snap .spotifier-sc-snapCenter [data-carousel-item] { scroll-snap-align: center; }
+.spotifier-sc-scroller.spotifier-sc-snap .spotifier-sc-snapStart [data-carousel-item] { scroll-snap-align: start; }
+.spotifier-sc-scroller.spotifier-sc-wheelEnabled { overscroll-behavior: contain; }
+.spotifier-sc-scroller.spotifier-sc-maskGradient { --sc-start-color: #000; --sc-end-color: #000; -webkit-mask-composite: source-in, xor; mask-composite: intersect; -webkit-mask-image: linear-gradient(90deg, var(--sc-start-color) 0, #000 120px), linear-gradient(90deg, #000 calc(100% - 120px), var(--sc-end-color) 100%); mask-image: linear-gradient(90deg, var(--sc-start-color) 0, #000 120px), linear-gradient(90deg, #000 calc(100% - 120px), var(--sc-end-color) 100%); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+.spotifier-sc-scroller.spotifier-sc-maskGradient.spotifier-sc-maskStart { --sc-start-color: transparent; }
+.spotifier-sc-scroller.spotifier-sc-maskGradient.spotifier-sc-maskEnd { --sc-end-color: transparent; }
+.spotifier-sc-linearGradient::before, .spotifier-sc-linearGradient::after { bottom: 0; content: ""; height: 100%; opacity: 0; pointer-events: none; position: absolute; top: 0; transition: opacity .15s ease-out; width: 120px; z-index: 2; }
+.spotifier-sc-linearGradient::before { background: linear-gradient(90deg, var(--carousel-start-chevron-gradient, var(--spice-main)) 0, transparent 100%); inset-inline-start: 0; }
+.spotifier-sc-linearGradient::after { background: linear-gradient(-90deg, var(--carousel-end-chevron-gradient, var(--spice-main)) 0, transparent 100%); inset-inline-end: 0; }
+.spotifier-sc-linearGradient.spotifier-sc-lgStart::before { opacity: 1; }
+.spotifier-sc-linearGradient.spotifier-sc-lgEnd::after { opacity: 1; }
+.spotifier-sc-carousel { bottom: 0; left: 0; position: absolute; right: 0; top: 0; justify-content: space-between; align-items: center; display: flex; pointer-events: none; }
+.spotifier-sc-chevronBtn { display: flex; border: none; border-radius: 50%; cursor: pointer; justify-content: center; align-items: center; backdrop-filter: var(--chevrons-button-backdrop-filter, none); background: transparent; background-color: var(--chevrons-button-color, var(--background-elevated-base)); height: 24px; opacity: 0; position: relative; transition: color .15s ease-out, opacity .15s ease-out, background-color .15s ease-out, translate .15s ease-out; translate: 0; width: 24px; z-index: 3; pointer-events: none; color: var(--text-base, #fff); }
+.spotifier-sc-chevronBtn > * { opacity: .7; z-index: 2; }
+.spotifier-sc-chevronBtn:hover { background-color: var(--chevrons-button-hover-color, var(--background-elevated-highlight)); }
+.spotifier-sc-chevronBtn:hover > * { opacity: 1; }
+.spotifier-sc-chevronBtn.spotifier-sc-chevronVisible { opacity: 1; pointer-events: auto; }
+.spotifier-sc-onHover .spotifier-sc-chevronBtn { opacity: 0; }
+.spotifier-sc-contentArea:hover .spotifier-sc-onHover .spotifier-sc-chevronBtn.spotifier-sc-chevronVisible { opacity: 1; }
+.spotifier-sc-contentArea:hover .spotifier-sc-onHover .spotifier-sc-chevronStart.spotifier-sc-chevronVisible { translate: 8px; }
+.spotifier-sc-contentArea:hover .spotifier-sc-onHover .spotifier-sc-chevronEnd.spotifier-sc-chevronVisible { translate: -8px; }
+.spotifier-sc-scroller > div[role="presentation"] > button { margin-inline-start: 0px !important; }
+body[data-dragging-uri-type] .spotifier-sc-chevronBtn { pointer-events: none; }`;
       document.head.appendChild(style);
     }
 
     function useDragToScroll({ isDisabled = true } = {}) {
-      const { useRef, useCallback } = Spicetify.React;
+      const { useRef, useCallback } = Spotifier.React;
       const frameRef = useRef(0);
       const savedBehavior = useRef(null);
       const savedSnapType = useRef(null);
@@ -120,7 +120,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
     }
 
     function useWheelScroll(onlyHorizontalWheel) {
-      const { useRef, useCallback } = Spicetify.React;
+      const { useRef, useCallback } = Spotifier.React;
       const isFirst = useRef(true);
       const savedBehavior = useRef(null);
       const timer = useRef(null);
@@ -148,7 +148,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
     }
 
     function useScrollState(scrollerRef, contentRef) {
-      const { useState, useCallback, useEffect } = Spicetify.React;
+      const { useState, useCallback, useEffect } = Spotifier.React;
       const [canGoStart, setCanGoStart] = useState(false);
       const [canGoEnd, setCanGoEnd] = useState(false);
 
@@ -184,10 +184,10 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
     }
 
     function ScrollableContainerComponent(props) {
-      const { useRef, useCallback, useMemo } = Spicetify.React;
-      const h = Spicetify.ReactJSX.jsx;
-      const hsf = Spicetify.ReactJSX.jsxs;
-      const cn = Spicetify.classnames;
+      const { useRef, useCallback, useMemo } = Spotifier.React;
+      const h = Spotifier.ReactJSX.jsx;
+      const hsf = Spotifier.ReactJSX.jsxs;
+      const cn = Spotifier.classnames;
 
       const {
         children,
@@ -270,7 +270,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 
       const makeChevron = (svgPath, position, visible, dir) =>
         h("div", {
-          className: cn("spicetify-sc-chevronBtn", `spicetify-sc-chevron${position}`, { "spicetify-sc-chevronVisible": visible }),
+          className: cn("spotifier-sc-chevronBtn", `spotifier-sc-chevron${position}`, { "spotifier-sc-chevronVisible": visible }),
           onClick: (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -281,20 +281,20 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
         });
 
       return hsf("div", {
-        className: cn("spicetify-sc-contentArea", className, {
-          "spicetify-sc-linearGradient": isLinearGradient,
-          "spicetify-sc-lgStart": isLinearGradient && canGoStart,
-          "spicetify-sc-lgEnd": isLinearGradient && canGoEnd,
+        className: cn("spotifier-sc-contentArea", className, {
+          "spotifier-sc-linearGradient": isLinearGradient,
+          "spotifier-sc-lgStart": isLinearGradient && canGoStart,
+          "spotifier-sc-lgEnd": isLinearGradient && canGoEnd,
         }),
         children: [
           h("div", {
             ref: scrollerRef,
-            className: cn("spicetify-sc-scroller", scrollerClassName, {
-              "spicetify-sc-snap": isSnap,
-              "spicetify-sc-maskGradient": isMask,
-              "spicetify-sc-wheelEnabled": wheelScrollEnabled,
-              "spicetify-sc-maskStart": isMask && canGoStart,
-              "spicetify-sc-maskEnd": isMask && canGoEnd,
+            className: cn("spotifier-sc-scroller", scrollerClassName, {
+              "spotifier-sc-snap": isSnap,
+              "spotifier-sc-maskGradient": isMask,
+              "spotifier-sc-wheelEnabled": wheelScrollEnabled,
+              "spotifier-sc-maskStart": isMask && canGoStart,
+              "spotifier-sc-maskEnd": isMask && canGoEnd,
             }),
             onScroll: onScroll ? fireScroll : undefined,
             onMouseDownCapture: dragHandler,
@@ -306,16 +306,16 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
               ref: contentRef,
               role: "presentation",
               className: cn(scrollContentClassName, {
-                "spicetify-sc-snapStart": scrollSnapAlign === "start",
-                "spicetify-sc-snapCenter": scrollSnapAlign === "center",
+                "spotifier-sc-snapStart": scrollSnapAlign === "start",
+                "spotifier-sc-snapCenter": scrollSnapAlign === "center",
               }),
               children,
             }),
           }),
           showButtons !== SHOW_BUTTONS.NEVER &&
             hsf("div", {
-              className: cn("spicetify-sc-carousel", chevronsClassName, {
-                "spicetify-sc-onHover": showButtons === SHOW_BUTTONS.ON_HOVER,
+              className: cn("spotifier-sc-carousel", chevronsClassName, {
+                "spotifier-sc-onHover": showButtons === SHOW_BUTTONS.ON_HOVER,
               }),
               children: [makeChevron(CHEVRON_LEFT, "Start", canGoStart, DIRECTION.START), makeChevron(CHEVRON_RIGHT, "End", canGoEnd, DIRECTION.END)],
             }),

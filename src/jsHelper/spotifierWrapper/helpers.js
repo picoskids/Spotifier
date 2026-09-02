@@ -1,19 +1,19 @@
 import { waitFor } from "./shared/async.js";
 
-Spicetify.getAudioData = async (uri) => {
-  const providedURI = uri || Spicetify.Player.data.item.uri;
-  const uriObj = Spicetify.URI.from?.(providedURI) ?? Spicetify.URI.fromString?.(providedURI);
-  if (!uriObj || (uriObj.Type || uriObj.type) !== Spicetify.URI.Type.TRACK) {
+Spotifier.getAudioData = async (uri) => {
+  const providedURI = uri || Spotifier.Player.data.item.uri;
+  const uriObj = Spotifier.URI.from?.(providedURI) ?? Spotifier.URI.fromString?.(providedURI);
+  if (!uriObj || (uriObj.Type || uriObj.type) !== Spotifier.URI.Type.TRACK) {
     throw "URI is invalid.";
   }
 
-  return await Spicetify.CosmosAsync.get(
+  return await Spotifier.CosmosAsync.get(
     `https://spclient.wg.spotify.com/audio-attributes/v1/audio-analysis/${uriObj.getBase62Id?.() ?? uriObj.id}?format=json`,
   );
 };
 
-Spicetify.colorExtractor = async (uri) => {
-  const body = await Spicetify.CosmosAsync.get(`https://spclient.wg.spotify.com/colorextractor/v1/extract-presets?uri=${uri}&format=json`);
+Spotifier.colorExtractor = async (uri) => {
+  const body = await Spotifier.CosmosAsync.get(`https://spclient.wg.spotify.com/colorextractor/v1/extract-presets?uri=${uri}&format=json`);
 
   if (body.entries?.length) {
     const list = {};
@@ -25,14 +25,14 @@ Spicetify.colorExtractor = async (uri) => {
   return null;
 };
 
-Spicetify.LocalStorage = {
+Spotifier.LocalStorage = {
   clear: () => localStorage.clear(),
   get: (key) => localStorage.getItem(key),
   remove: (key) => localStorage.removeItem(key),
   set: (key, value) => localStorage.setItem(key, value),
 };
 
-Spicetify._getStyledClassName = (args, component) => {
+Spotifier._getStyledClassName = (args, component) => {
   const includedKeys = [
     "role",
     "variant",
@@ -109,7 +109,7 @@ Spicetify._getStyledClassName = (args, component) => {
 };
 
 void (async function waitMouseTrap() {
-  await waitFor(() => Spicetify.Mousetrap, 10);
+  await waitFor(() => Spotifier.Mousetrap, 10);
   const KEYS = {
     BACKSPACE: "backspace",
     TAB: "tab",
@@ -222,7 +222,7 @@ void (async function waitMouseTrap() {
     let keystroke = "";
     if (typeof keys === "object") {
       if (!keys.key || !Object.values(KEYS).includes(keys.key)) {
-        throw `Spicetify.Keyboard.registerShortcut: Invalid key ${keys.key}`;
+        throw `Spotifier.Keyboard.registerShortcut: Invalid key ${keys.key}`;
       }
       if (keys.ctrl) keystroke += "mod+";
       if (keys.meta) keystroke += "meta+";
@@ -232,30 +232,30 @@ void (async function waitMouseTrap() {
     } else if (typeof keys === "string" && Object.values(KEYS).includes(keys)) {
       keystroke = keys;
     } else {
-      throw `Spicetify.Keyboard.registerShortcut: Invalid keys ${keys}`;
+      throw `Spotifier.Keyboard.registerShortcut: Invalid keys ${keys}`;
     }
     return keystroke;
   }
 
-  Spicetify.Keyboard = {
+  Spotifier.Keyboard = {
     KEYS,
     registerShortcut: (keys, callback) => {
-      Spicetify.Mousetrap.bind(formatKeys(keys), callback);
+      Spotifier.Mousetrap.bind(formatKeys(keys), callback);
     },
     _deregisterShortcut: (keys) => {
-      Spicetify.Mousetrap.unbind(formatKeys(keys));
+      Spotifier.Mousetrap.unbind(formatKeys(keys));
     },
     changeShortcut: (keys, newKeys) => {
-      if (!keys || !newKeys) throw "Spicetify.Keyboard.changeShortcut: Invalid keys";
+      if (!keys || !newKeys) throw "Spotifier.Keyboard.changeShortcut: Invalid keys";
 
-      const callback = Object.keys(Spicetify.Mousetrap.trigger()._directMap).find((key) => key.startsWith(formatKeys(keys)));
-      if (!callback) throw "Spicetify.Keyboard.changeShortcut: Shortcut not found";
+      const callback = Object.keys(Spotifier.Mousetrap.trigger()._directMap).find((key) => key.startsWith(formatKeys(keys)));
+      if (!callback) throw "Spotifier.Keyboard.changeShortcut: Shortcut not found";
 
-      Spicetify.Keyboard.registerShortcut(newKeys, Spicetify.Mousetrap.trigger()._directMap[callback]);
-      Spicetify.Keyboard._deregisterShortcut(keys);
+      Spotifier.Keyboard.registerShortcut(newKeys, Spotifier.Mousetrap.trigger()._directMap[callback]);
+      Spotifier.Keyboard._deregisterShortcut(keys);
     },
   };
-  Spicetify.Keyboard.registerIsolatedShortcut = Spicetify.Keyboard.registerShortcut;
-  Spicetify.Keyboard.registerImportantShortcut = Spicetify.Keyboard.registerShortcut;
-  Spicetify.Keyboard.deregisterImportantShortcut = Spicetify.Keyboard._deregisterShortcut;
+  Spotifier.Keyboard.registerIsolatedShortcut = Spotifier.Keyboard.registerShortcut;
+  Spotifier.Keyboard.registerImportantShortcut = Spotifier.Keyboard.registerShortcut;
+  Spotifier.Keyboard.deregisterImportantShortcut = Spotifier.Keyboard._deregisterShortcut;
 })();

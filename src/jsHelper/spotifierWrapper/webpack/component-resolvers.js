@@ -60,9 +60,9 @@ export function findDropdownComponent({ modules, chunks, require }) {
 export function wrapProvider(component) {
   if (!component) return null;
   return (props) =>
-    Spicetify.React.createElement(
-      Spicetify.ReactComponent.RemoteConfigProvider,
-      { configuration: Spicetify.Platform.RemoteConfiguration },
-      Spicetify.React.createElement(component, props),
+    Spotifier.React.createElement(
+      Spotifier.ReactComponent.RemoteConfigProvider,
+      { configuration: Spotifier.Platform.RemoteConfiguration },
+      Spotifier.React.createElement(component, props),
     );
 }

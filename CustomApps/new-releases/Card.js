@@ -1,5 +1,5 @@
 function DraggableComponent({ uri, title, children }) {
-	const dragHandler = Spicetify.ReactHook.DragHandler?.([uri], title);
+	const dragHandler = Spotifier.ReactHook.DragHandler?.([uri], title);
 	return dragHandler
 		? react.cloneElement(children, {
 				onDragStart: dragHandler,
@@ -14,18 +14,18 @@ class Card extends react.Component {
 		Object.assign(this, props);
 		this.href = URI.fromString(this.uri).toURLPath(true);
 		this.artistHref = URI.fromString(this.artist.uri).toURLPath(true);
-		const uriType = Spicetify.URI.fromString(this.uri)?.type;
+		const uriType = Spotifier.URI.fromString(this.uri)?.type;
 		switch (uriType) {
-			case Spicetify.URI.Type.ALBUM:
-			case Spicetify.URI.Type.TRACK:
-				this.menuType = Spicetify.ReactComponent.AlbumMenu;
+			case Spotifier.URI.Type.ALBUM:
+			case Spotifier.URI.Type.TRACK:
+				this.menuType = Spotifier.ReactComponent.AlbumMenu;
 				break;
 		}
 		this.menuType = this.menuType || "div";
 	}
 
 	play(event) {
-		Spicetify.Player.playUri(this.uri, this.context);
+		Spotifier.Player.playUri(this.uri, this.context);
 		event.stopPropagation();
 	}
 
@@ -34,40 +34,40 @@ class Card extends react.Component {
 
 		removeCards(this.props.uri);
 
-		Spicetify.Snackbar.enqueueCustomSnackbar
-			? Spicetify.Snackbar.enqueueCustomSnackbar("dismissed-release", {
+		Spotifier.Snackbar.enqueueCustomSnackbar
+			? Spotifier.Snackbar.enqueueCustomSnackbar("dismissed-release", {
 					keyPrefix: "dismissed-release",
-					children: Spicetify.ReactComponent.Snackbar.wrapper({
-						children: Spicetify.ReactComponent.Snackbar.simpleLayout({
-							leading: Spicetify.ReactComponent.Snackbar.styledImage({
+					children: Spotifier.ReactComponent.Snackbar.wrapper({
+						children: Spotifier.ReactComponent.Snackbar.simpleLayout({
+							leading: Spotifier.ReactComponent.Snackbar.styledImage({
 								src: this.props.imageURL,
 								imageHeight: "24px",
 								imageWidth: "24px",
 							}),
-							center: Spicetify.React.createElement("div", {
+							center: Spotifier.React.createElement("div", {
 								dangerouslySetInnerHTML: {
 									__html: `Dismissed <b>${this.title}</b>.`,
 								},
 							}),
-							trailing: Spicetify.ReactComponent.Snackbar.ctaText({
+							trailing: Spotifier.ReactComponent.Snackbar.ctaText({
 								ctaText: "Undo",
 								onCtaClick: () => removeCards(this.props.uri, "undo"),
 							}),
 						}),
 					}),
 				})
-			: Spicetify.showNotification(`Dismissed <b>${this.title}</b> from <br>${this.artist.name}</b>`);
+			: Spotifier.showNotification(`Dismissed <b>${this.title}</b> from <br>${this.artist.name}</b>`);
 	}
 
 	render() {
 		const detail = [];
 		this.visual.type && detail.push(this.type);
 		if (this.visual.count && this.trackCount) {
-			detail.push(Spicetify.Locale.get("tracklist-header.songs-counter", this.trackCount));
+			detail.push(Spotifier.Locale.get("tracklist-header.songs-counter", this.trackCount));
 		}
 
 		return react.createElement(
-			Spicetify.ReactComponent.RightClickMenu || "div",
+			Spotifier.ReactComponent.RightClickMenu || "div",
 			{
 				menu: react.createElement(this.menuType, { uri: this.uri }),
 			},
@@ -122,7 +122,7 @@ class Card extends react.Component {
 									"div",
 									{
 										className: "main-playButton-PlayButton main-playButton-primary",
-										"aria-label": Spicetify.Locale.get("play"),
+										"aria-label": Spotifier.Locale.get("play"),
 										style: { "--size": "40px" },
 										onClick: this.play.bind(this),
 									},
@@ -151,7 +151,7 @@ class Card extends react.Component {
 								)
 							),
 							react.createElement(
-								Spicetify.ReactComponent.TooltipWrapper,
+								Spotifier.ReactComponent.TooltipWrapper,
 								{ label: "Dismiss" },
 								react.createElement(
 									"button",
